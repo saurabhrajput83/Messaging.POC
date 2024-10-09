@@ -1,13 +1,14 @@
 ﻿using Azure.Messaging.ServiceBus;
+using ServiceBus.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceBus.BLL
+namespace ServiceBus.BLL.Implementations
 {
-    public class ServiceBusQueueSender : IAsyncDisposable
+    public class ServiceBusQueueSender : IServiceBusSender, IAsyncDisposable
     {
 
         ServiceBusClient _client;

@@ -1,14 +1,15 @@
 ﻿using Azure.Core;
 using Azure.Messaging.ServiceBus;
+using ServiceBus.BLL.Interfaces;
 using System.Diagnostics;
 
-namespace ServiceBus.BLL
+namespace ServiceBus.BLL.Implementations
 {
-    public class ServiceBusQueueReceiver
+    public class ServiceBusQueueReceiver : IServiceBusReceiver, IAsyncDisposable
     {
 
-        ServiceBusClient client;
-        ServiceBusProcessor processor;
+        ServiceBusClient _client;
+        ServiceBusProcessor _processor;
         private string _namespace_connection_string;
         private string _queue_name;
 
@@ -27,8 +28,8 @@ namespace ServiceBus.BLL
                 TransportType = ServiceBusTransportType.AmqpWebSockets
             };
 
-            client = new ServiceBusClient(_namespace_connection_string, clientOptions);
-            processor = client.CreateProcessor(_queue_name, new ServiceBusProcessorOptions());
+            _client = new ServiceBusClient(_namespace_connection_string, clientOptions);
+            _processor = _client.CreateProcessor(_queue_name, new ServiceBusProcessorOptions());
         }
 
         public async Task Start()
@@ -36,10 +37,10 @@ namespace ServiceBus.BLL
             try
             {
 
-                processor.ProcessMessageAsync += MessageHandler;
-                processor.ProcessErrorAsync += ErrorHandler;
+                _processor.ProcessMessageAsync += MessageHandler;
+                _processor.ProcessErrorAsync += ErrorHandler;
 
-                await processor.StartProcessingAsync();
+                await _processor.StartProcessingAsync();
 
 
             }
@@ -51,17 +52,7 @@ namespace ServiceBus.BLL
 
         public async Task Stop()
         {
-            await processor.StopProcessingAsync();
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            // Calling DisposeAsync on client types is required to ensure that network
-            // resources and other unmanaged objects are properly cleaned up.
-            if (processor != null)
-                await processor.DisposeAsync();
-            if (client != null)
-                await client.DisposeAsync();
+            await _processor.StopProcessingAsync();
         }
 
 
@@ -80,6 +71,16 @@ namespace ServiceBus.BLL
         {
             Console.WriteLine(args.Exception.ToString());
             return Task.CompletedTask;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            // Calling DisposeAsync on client types is required to ensure that network
+            // resources and other unmanaged objects are properly cleaned up.
+            if (_processor != null)
+                await _processor.DisposeAsync();
+            if (_client != null)
+                await _client.DisposeAsync();
         }
     }
 }
