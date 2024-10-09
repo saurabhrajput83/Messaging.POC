@@ -52,7 +52,14 @@ namespace ServiceBus.BLL.Implementations
 
         public async Task Stop()
         {
-            await _processor.StopProcessingAsync();
+            try
+            {
+                await _processor.StopProcessingAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
