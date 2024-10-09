@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Azure.Messaging.ServiceBus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace ServiceBus.BLL.Interfaces
     public interface IServiceBusReceiver
     {
         void Init();
-        Task Start();
+        Task Start(Func<ProcessMessageEventArgs, Task> messageHandler, Func<ProcessErrorEventArgs, Task> errorHandler);
 
         Task Stop();
     }

@@ -32,13 +32,13 @@ namespace ServiceBus.BLL.Implementations
             _processor = _client.CreateProcessor(_queue_name, new ServiceBusProcessorOptions());
         }
 
-        public async Task Start()
+        public async Task Start(Func<ProcessMessageEventArgs, Task> messageHandler, Func<ProcessErrorEventArgs, Task> errorHandler)
         {
             try
             {
 
-                _processor.ProcessMessageAsync += MessageHandler;
-                _processor.ProcessErrorAsync += ErrorHandler;
+                _processor.ProcessMessageAsync += messageHandler;
+                _processor.ProcessErrorAsync += errorHandler;
 
                 await _processor.StartProcessingAsync();
 

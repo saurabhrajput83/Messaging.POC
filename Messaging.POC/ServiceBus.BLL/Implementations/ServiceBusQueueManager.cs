@@ -27,9 +27,9 @@ namespace ServiceBus.BLL.Implementations
 
         }
 
-        public async Task StartListening()
+        public async Task StartListening(Func<ProcessMessageEventArgs, Task> messageHandler, Func<ProcessErrorEventArgs, Task> errorHandler)
         {
-            await _receiver.Start();
+            await _receiver.Start(messageHandler, errorHandler);
         }
 
         public async Task StopListening()
