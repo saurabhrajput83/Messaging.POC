@@ -56,23 +56,6 @@ namespace ServiceBus.BLL.Implementations
         }
 
 
-        // handle received messages
-        async Task MessageHandler(ProcessMessageEventArgs args)
-        {
-            string body = args.Message.Body.ToString();
-            Console.WriteLine($"Received: {body}");
-
-            // complete the message. message is deleted from the queue. 
-            await args.CompleteMessageAsync(args.Message);
-        }
-
-        // handle any errors when receiving messages
-        Task ErrorHandler(ProcessErrorEventArgs args)
-        {
-            Console.WriteLine(args.Exception.ToString());
-            return Task.CompletedTask;
-        }
-
         public async ValueTask DisposeAsync()
         {
             // Calling DisposeAsync on client types is required to ensure that network
