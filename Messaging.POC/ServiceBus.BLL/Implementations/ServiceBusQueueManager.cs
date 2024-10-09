@@ -37,7 +37,7 @@ namespace ServiceBus.BLL.Implementations
             await _receiver.Stop();
         }
 
-        public async Task StopListening(string message)
+        public async Task SendMessage(string message)
         {
             await _sender.Send(message);
         }
