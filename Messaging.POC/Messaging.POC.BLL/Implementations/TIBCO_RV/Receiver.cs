@@ -64,15 +64,16 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
                        );
                 sendReplyListener.MessageReceived += new MessageReceivedEventHandler(SendReplyListener_MessageReceived);
 
+                Console.WriteLine("\nTIBCO RV Receiver started running..");
+
+
                 var dispacher = new Dispatcher(_queue);
                 dispacher.Join();
 
-                Console.WriteLine("Receiver started running..");
-                Console.ReadLine();
 
                 TIBCO.Rendezvous.Environment.Close();
                 Console.WriteLine("Exiting..");
-                Console.ReadKey();
+                Console.ReadLine();
 
             }
             catch (Exception)
@@ -91,7 +92,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("SendListener_Message Received..");
+            Console.WriteLine("\nTIBCO RV SendListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -112,7 +113,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
-            Console.WriteLine("SendRequestListener_Message Received..");
+            Console.WriteLine("\nTIBCO RV SendRequestListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -134,7 +135,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("SendReplyListener_Message Received..");
+            Console.WriteLine("\nTIBCO RV SendReplyListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 

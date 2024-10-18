@@ -35,7 +35,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 
                 _transport = new NetTransport(_service, _network, _daemon);
                 _channel = new Channel(_transport);
-                Console.WriteLine("Publisher started running..");
+                Console.WriteLine("\nTIBCO RV Publisher started running..");
                 bool flag = true;
 
                 while (flag)
@@ -80,7 +80,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 
 
             _channel.SendMessage(customMsg);
-            Console.WriteLine("SendMessage Completed..");
+            Console.WriteLine("\nTIBCO RV SendMessage Completed..");
         }
 
         private void SendRequestMessage()
@@ -93,9 +93,9 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string responseMsgStr = JsonConvert.SerializeObject(responseMsg);
 
 
-            Console.WriteLine("SendRequestMessage Completed..");
-            Console.WriteLine($"customMsg: {customMsg}");
-            Console.WriteLine($"responseMsg: {responseMsg}");
+            Console.WriteLine("\nTIBCO RV SendRequestMessage Completed..");
+            Console.WriteLine($"customMsg: {customMsgStr}");
+            Console.WriteLine($"responseMsg: {responseMsgStr}");
         }
 
         private void SendReplyMessage()
@@ -106,8 +106,11 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 
             _channel.SendMessage(customMsg);
 
+            string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
-            Console.WriteLine("SendReplyMessage Completed..");
+
+            Console.WriteLine("\nTIBCO RV SendReplyMessage Completed..");
+            Console.WriteLine($"customMsg: {customMsgStr}");
         }
 
         private CustomMessage GetCustomMessage(string sendSubject, int counter)

@@ -18,7 +18,7 @@ namespace Messaging.POC.Publisher
 
             while (flag)
             {
-                Console.WriteLine("Press a to test TIBCO RV, b to test Service Bus, and x to exit..");
+                Console.WriteLine("\nPress a to test TIBCO RV, b to test Service Bus, and x to exit..");
                 var line = Console.ReadLine().ToUpper();
 
 
