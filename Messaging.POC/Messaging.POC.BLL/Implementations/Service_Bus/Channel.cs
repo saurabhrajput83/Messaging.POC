@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Frwk = TIBCO.Rendezvous;
+using Frwk = ServiceBus.Framework.Infrastructure;
 
 namespace Messaging.POC.BLL.Implementations.Service_Bus
 {

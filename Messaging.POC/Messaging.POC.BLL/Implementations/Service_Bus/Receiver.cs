@@ -11,31 +11,31 @@ using System.Net;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
-using Frwk = TIBCO.Rendezvous;
+using Frwk = ServiceBus.Framework.Infrastructure;
 
 namespace Messaging.POC.BLL.Implementations.Service_Bus
 {
     public class Receiver : IReceiver
     {
-        private string _sendMessageSubject = "MS.Send.TEST";
-        private string _sendRequestMessageSubject = "MS.SendRequest.TEST";
-        private string _sendReplyMessageSubject = "MS.SendReply.TEST";
+        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
+        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
+        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
         private string _service = ConfigurationManager.AppSettings["service"];
         private string _network = ConfigurationManager.AppSettings["network"];
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
         private Frwk.Transport _transport;
         private Channel _channel;
-        private TIBCO.Rendezvous.Queue _queue;
+        private Frwk.Queue _queue;
 
         public void Run()
         {
             try
             {
-                TIBCO.Rendezvous.Environment.Open();
+                Frwk.Environment.Open();
 
                 _transport = new Frwk.NetTransport(_service, _network, _daemon);
                 _channel = new Channel(_transport);
-                _queue = TIBCO.Rendezvous.Queue.Default;
+                _queue = Frwk.Queue.Default;
 
 
                 Frwk.Listener sendListener = new Frwk.Listener(
@@ -70,7 +70,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
                 dispacher.Join();
 
 
-                TIBCO.Rendezvous.Environment.Close();
+                Frwk.Environment.Close();
                 Console.WriteLine("Exiting..");
                 Console.ReadLine();
 

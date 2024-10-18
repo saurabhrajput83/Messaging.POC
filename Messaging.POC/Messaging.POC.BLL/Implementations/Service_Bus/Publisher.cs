@@ -11,15 +11,15 @@ using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
-using Frwk = TIBCO.Rendezvous;
+using Frwk = ServiceBus.Framework.Infrastructure;
 
 namespace Messaging.POC.BLL.Implementations.Service_Bus
 {
     public class Publisher : IPublisher
     {
-        private string _sendMessageSubject = "MS.Send.TEST";
-        private string _sendRequestMessageSubject = "MS.SendRequest.TEST";
-        private string _sendReplyMessageSubject = "MS.SendReply.TEST";
+        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
+        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
+        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
         private string _service = ConfigurationManager.AppSettings["service"];
         private string _network = ConfigurationManager.AppSettings["network"];
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
@@ -30,7 +30,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
         {
             try
             {
-                TIBCO.Rendezvous.Environment.Open();
+                Frwk.Environment.Open();
 
 
                 _transport = new Frwk.NetTransport(_service, _network, _daemon);
@@ -65,7 +65,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
 
                 }
 
-                TIBCO.Rendezvous.Environment.Close();
+                Frwk.Environment.Close();
 
             }
             catch (Exception)

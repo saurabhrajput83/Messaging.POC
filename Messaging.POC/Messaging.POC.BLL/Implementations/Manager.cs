@@ -15,6 +15,8 @@ namespace Messaging.POC.BLL.Implementations
             IPublisher publisher = null;
             if (messagingType == MessagingType.TIBCO_RV)
                 publisher = new TIBCO_RV.Publisher();
+            else if (messagingType == MessagingType.Service_Bus)
+                publisher = new Service_Bus.Publisher();
 
             return publisher;
         }
@@ -24,6 +26,8 @@ namespace Messaging.POC.BLL.Implementations
             IReceiver receiver = null;
             if (messagingType == MessagingType.TIBCO_RV)
                 receiver = new TIBCO_RV.Receiver();
+            else if (messagingType == MessagingType.Service_Bus)
+                receiver = new Service_Bus.Receiver();
 
             return receiver;
         }

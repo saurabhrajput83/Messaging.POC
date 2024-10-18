@@ -25,17 +25,17 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
         private Frwk.Transport _transport;
         private Channel _channel;
-        private TIBCO.Rendezvous.Queue _queue;
+        private Frwk.Queue _queue;
 
         public void Run()
         {
             try
             {
-                TIBCO.Rendezvous.Environment.Open();
+                Frwk.Environment.Open();
 
                 _transport = new Frwk.NetTransport(_service, _network, _daemon);
                 _channel = new Channel(_transport);
-                _queue = TIBCO.Rendezvous.Queue.Default;
+                _queue = Frwk.Queue.Default;
 
 
                 Frwk.Listener sendListener = new Frwk.Listener(
@@ -70,7 +70,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
                 dispacher.Join();
 
 
-                TIBCO.Rendezvous.Environment.Close();
+                Frwk.Environment.Close();
                 Console.WriteLine("Exiting..");
                 Console.ReadLine();
 

@@ -30,7 +30,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
         {
             try
             {
-                TIBCO.Rendezvous.Environment.Open();
+                Frwk.Environment.Open();
 
 
                 _transport = new Frwk.NetTransport(_service, _network, _daemon);
@@ -65,7 +65,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 
                 }
 
-                TIBCO.Rendezvous.Environment.Close();
+                Frwk.Environment.Close();
 
             }
             catch (Exception)
