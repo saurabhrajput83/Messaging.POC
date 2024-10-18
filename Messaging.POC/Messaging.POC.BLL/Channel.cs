@@ -11,6 +11,7 @@ namespace Messaging.POC.BLL
     public class Channel
     {
         private Transport _transport;
+        private double _timeout = 5000;
 
         public Channel(Transport transport)
         {
@@ -22,6 +23,21 @@ namespace Messaging.POC.BLL
             Message msg = ConvertToTibcoMessage(customMsg);
 
             _transport.Send(msg);
+        }
+
+        public Message SendRequestMessage(CustomMessage customMsg)
+        {
+            Message msg = ConvertToTibcoMessage(customMsg);
+
+            Message replyMsg = _transport.SendRequest(msg, _timeout);
+
+            return replyMsg;
+        }
+
+        public void SendReplyMessage(Message replyMsg, Message msg)
+        {
+            _transport.SendReply(replyMsg, msg);
+
         }
 
         private Message ConvertToTibcoMessage(CustomMessage customMsg)
@@ -39,7 +55,7 @@ namespace Messaging.POC.BLL
             return msg;
         }
 
-        private CustomMessage ConvertToCustomMessage(Message msg)
+        public CustomMessage ConvertToCustomMessage(Message msg)
         {
             CustomMessage customMsg = new CustomMessage();
 

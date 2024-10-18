@@ -16,7 +16,8 @@ namespace TIBCO.RV.Publisher
 {
     public class Publisher
     {
-        private string _sendMessageSubject = "ME.TEST";
+        private string _sendMessageSubject = "MS.Send.TEST";
+        private string _sendRequestMessageSubject = "MS.SendRequest.TEST";
         private string _service = ConfigurationManager.AppSettings["service"];
         private string _network = ConfigurationManager.AppSettings["network"];
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
@@ -37,18 +38,21 @@ namespace TIBCO.RV.Publisher
 
                 while (flag)
                 {
-                    Console.WriteLine("Press 1 for Send, and x to exit");
+                    Console.WriteLine("Press 1 to test Send, 2 to test SendRequest, and x to exit");
                     var line = Console.ReadLine().ToUpper();
 
 
                     switch (line)
                     {
 
-                        case "X":
-                            flag = false;
-                            break;
                         case "1":
                             SendMessage();
+                            break;
+                        case "2":
+                            SendRequestMessage();
+                            break;
+                        case "X":
+                            flag = false;
                             break;
                         default:
                             break;
@@ -76,6 +80,29 @@ namespace TIBCO.RV.Publisher
             customMsg.Address = "Whitefield";
 
             _channel.SendMessage(customMsg);
+            Console.WriteLine("SendMessage Completed..");
+        }
+
+        public void SendRequestMessage()
+        {
+            CustomMessage customMsg = new CustomMessage();
+
+            customMsg.SendSubject = _sendRequestMessageSubject;
+            customMsg.Name = "Saurabh >>";
+            customMsg.Age = 39;
+            customMsg.Department = "I.T. >>";
+            customMsg.Address = "Whitefield >>";
+
+            Message msg = _channel.SendRequestMessage(customMsg);
+            CustomMessage customMsg2 = _channel.ConvertToCustomMessage(msg);
+
+            string msgStr = JsonConvert.SerializeObject(msg);
+            string customMsg2Str = JsonConvert.SerializeObject(customMsg2);
+
+
+            Console.WriteLine("SendRequestMessage Completed..");
+            Console.WriteLine($"Message: {msgStr}");
+            Console.WriteLine($"CustomMessage2: {customMsg2Str}");
         }
 
     }
