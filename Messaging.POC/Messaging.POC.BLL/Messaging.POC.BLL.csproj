@@ -40,9 +40,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TIBCO.Rendezvous, Version=1.0.844.2, Culture=neutral, PublicKeyToken=1a696d1f90f6158a, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\tibco\tibrv\8.4\bin\TIBCO.Rendezvous.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="DTOs\CustomMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
