@@ -77,5 +77,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Messaging.POC.BLL\Messaging.POC.BLL.csproj">
+      <Project>{C1F4CB11-A90F-4264-8724-F2081A6AD7AB}</Project>
+      <Name>Messaging.POC.BLL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
