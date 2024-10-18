@@ -136,6 +136,16 @@
     <Compile Include="Implementations\ServiceBusQueueManager.cs" />
     <Compile Include="Implementations\ServiceBusQueueReceiver.cs" />
     <Compile Include="Implementations\ServiceBusQueueSender.cs" />
+    <Compile Include="Infrastructure\Dispatcher.cs" />
+    <Compile Include="Infrastructure\Environment.cs" />
+    <Compile Include="Infrastructure\Listener.cs" />
+    <Compile Include="Infrastructure\Message.cs" />
+    <Compile Include="Infrastructure\MessageField.cs" />
+    <Compile Include="Infrastructure\MessageReceivedEventArgs.cs" />
+    <Compile Include="Infrastructure\MessageReceivedEventHandler.cs" />
+    <Compile Include="Infrastructure\NetTransport.cs" />
+    <Compile Include="Infrastructure\Queue.cs" />
+    <Compile Include="Infrastructure\Transport.cs" />
     <Compile Include="Interfaces\IServiceBusReceiver.cs" />
     <Compile Include="Interfaces\IServiceBusSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,8 +154,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
