@@ -8,8 +8,20 @@ namespace ServiceBus.Framework.Infrastructure
 {
     public class MessageField
     {
-        public string _fieldName = string.Empty;
-        public object _fieldValue;
+        private string _fieldName = string.Empty;
+        private object _fieldValue;
+
+        public string FieldName
+        {
+            get
+            {
+                return _fieldName;
+            }
+            set
+            {
+                _fieldName = value;
+            }
+        }
 
         public object Value
         {
@@ -22,6 +34,10 @@ namespace ServiceBus.Framework.Infrastructure
                 _fieldValue = value;
             }
         }
+
+
+        public MessageField()
+        { }
 
         public MessageField(string fieldName, string fieldValue)
         {

@@ -23,6 +23,8 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
         private string _service = ConfigurationManager.AppSettings["service"];
         private string _network = ConfigurationManager.AppSettings["network"];
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
+        private string _namespace_connection_string = ConfigurationManager.AppSettings["namespace_connection_string"];
+        private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
         private Frwk.Transport _transport;
         private Channel _channel;
         private Frwk.Queue _queue;
@@ -33,7 +35,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             {
                 Frwk.Environment.Open();
 
-                _transport = new Frwk.NetTransport(_service, _network, _daemon);
+                _transport = new Frwk.NetTransport(_namespace_connection_string, _queue_name);
                 _channel = new Channel(_transport);
                 _queue = Frwk.Queue.Default;
 
@@ -41,29 +43,30 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
                 Frwk.Listener sendListener = new Frwk.Listener(
                        _queue,
                         _transport,
+                        SendListener_MessageReceived,
                         _sendMessageSubject,
                         new object()
                         );
-                sendListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendListener_MessageReceived);
 
 
                 Frwk.Listener sendRequestListener = new Frwk.Listener(
                        _queue,
                         _transport,
+                        SendRequestListener_MessageReceived,
                         _sendRequestMessageSubject,
                         new object()
                         );
-                sendRequestListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendRequestListener_MessageReceived);
+
 
                 Frwk.Listener sendReplyListener = new Frwk.Listener(
                       _queue,
                        _transport,
+                       SendReplyListener_MessageReceived,
                        _sendReplyMessageSubject,
                        new object()
                        );
-                sendReplyListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendReplyListener_MessageReceived);
 
-                Console.WriteLine("\nTIBCO RV Receiver started running..");
+                Console.WriteLine("\nService Bus Receiver started running..");
 
 
                 var dispacher = new Frwk.Dispatcher(_queue);
@@ -91,7 +94,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendListener_Message Received..");
+            Console.WriteLine("\nService Bus SendListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -112,7 +115,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
-            Console.WriteLine("\nTIBCO RV SendRequestListener_Message Received..");
+            Console.WriteLine("\nService Bus SendRequestListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -134,7 +137,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendReplyListener_Message Received..");
+            Console.WriteLine("\nService Bus SendReplyListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 

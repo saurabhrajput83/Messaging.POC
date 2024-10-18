@@ -67,10 +67,10 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             customMsg.SendSubject = msg.SendSubject;
             customMsg.ReplySubject = msg.ReplySubject;
 
-            customMsg.Name = (string)msg.GetField("Name").Value;
-            customMsg.Age = (int)msg.GetField("Age").Value;
-            customMsg.Department = (string)msg.GetField("Department").Value;
-            customMsg.Address = (string)msg.GetField("Address").Value;
+            customMsg.Name = Convert.ToString(msg.GetField("Name").Value);
+            customMsg.Age = Convert.ToInt32(msg.GetField("Age").Value);
+            customMsg.Department = Convert.ToString(msg.GetField("Department").Value);
+            customMsg.Address = Convert.ToString(msg.GetField("Address").Value);
 
             return customMsg;
         }

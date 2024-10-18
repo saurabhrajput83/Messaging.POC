@@ -8,8 +8,9 @@ namespace ServiceBus.Framework.Infrastructure
 {
     public class Message
     {
-        public string _sendSubject = string.Empty;
-        public string _replySubject = string.Empty;
+        private string _sendSubject = string.Empty;
+        private string _replySubject = string.Empty;
+        private List<MessageField> _fields = new List<MessageField>();
 
         public string SendSubject
         {
@@ -35,13 +36,31 @@ namespace ServiceBus.Framework.Infrastructure
             }
         }
 
+        public List<MessageField> Fields
+        {
+            get
+            {
+                return _fields;
+            }
+            set
+            {
+                _fields = value;
+            }
+        }
+
+        public Message()
+        { }
+
         public void AddField(MessageField messageField)
         {
+            _fields.Add(messageField);
         }
 
         public MessageField GetField(string fieldName)
         {
-            return new MessageField("", 0);
+
+            MessageField field = _fields.FirstOrDefault(f => f.FieldName == fieldName);
+            return field;
         }
     }
 }

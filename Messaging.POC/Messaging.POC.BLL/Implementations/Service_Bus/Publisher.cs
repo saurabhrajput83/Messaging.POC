@@ -20,9 +20,8 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
         private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
         private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
         private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
-        private string _service = ConfigurationManager.AppSettings["service"];
-        private string _network = ConfigurationManager.AppSettings["network"];
-        private string _daemon = ConfigurationManager.AppSettings["daemon"];
+        private string _namespace_connection_string = ConfigurationManager.AppSettings["namespace_connection_string"];
+        private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
         private Frwk.Transport _transport;
         private Channel _channel;
 
@@ -33,9 +32,9 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
                 Frwk.Environment.Open();
 
 
-                _transport = new Frwk.NetTransport(_service, _network, _daemon);
+                _transport = new Frwk.NetTransport(_namespace_connection_string, _queue_name);
                 _channel = new Channel(_transport);
-                Console.WriteLine("\nTIBCO RV Publisher started running..");
+                Console.WriteLine("\nService Bus Publisher started running..");
                 bool flag = true;
 
                 while (flag)
@@ -80,7 +79,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
 
 
             _channel.SendMessage(customMsg);
-            Console.WriteLine("\nTIBCO RV SendMessage Completed..");
+            Console.WriteLine("\nService Bus SendMessage Completed..");
         }
 
         private void SendRequestMessage()
@@ -93,7 +92,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string responseMsgStr = JsonConvert.SerializeObject(responseMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendRequestMessage Completed..");
+            Console.WriteLine("\nService Bus SendRequestMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
             Console.WriteLine($"responseMsg: {responseMsgStr}");
         }
@@ -109,7 +108,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendReplyMessage Completed..");
+            Console.WriteLine("\nService Bus SendReplyMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
         }
 

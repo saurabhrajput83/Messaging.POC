@@ -37,7 +37,8 @@ namespace ServiceBus.Framework.Implementations
 
 
             // try adding a message to the batch
-            if (!messageBatch.TryAddMessage(new ServiceBusMessage($"Message {message}")))
+
+            if (!messageBatch.TryAddMessage(new ServiceBusMessage($"{message}")))
             {
                 // if it is too large for the batch
                 throw new Exception($"The message {message} is too large to fit in the batch.");
