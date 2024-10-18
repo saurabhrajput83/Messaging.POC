@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TIBCO.Rendezvous;
-using BLL_Implementations = Messaging.POC.BLL.Implementations;
 
 namespace Messaging.POC.BLL.Implementations
 {
@@ -16,7 +14,7 @@ namespace Messaging.POC.BLL.Implementations
         {
             IPublisher publisher = null;
             if (messagingType == MessagingType.TIBCO_RV)
-                publisher = new BLL_Implementations.TIBCO_RV.Publisher();
+                publisher = new TIBCO_RV.Publisher();
 
             return publisher;
         }
@@ -25,7 +23,7 @@ namespace Messaging.POC.BLL.Implementations
         {
             IReceiver receiver = null;
             if (messagingType == MessagingType.TIBCO_RV)
-                receiver = new BLL_Implementations.TIBCO_RV.Receiver();
+                receiver = new TIBCO_RV.Receiver();
 
             return receiver;
         }

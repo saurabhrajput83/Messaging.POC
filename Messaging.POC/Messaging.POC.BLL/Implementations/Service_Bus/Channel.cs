@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Frwk = TIBCO.Rendezvous;
 
-namespace Messaging.POC.BLL.Implementations.TIBCO_RV
+namespace Messaging.POC.BLL.Implementations.Service_Bus
 {
     public class Channel : IChannel
     {

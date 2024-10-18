@@ -68,6 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementations\Service_Bus\Channel.cs" />
+    <Compile Include="Implementations\Service_Bus\Publisher.cs" />
+    <Compile Include="Implementations\Service_Bus\Receiver.cs" />
     <Compile Include="Implementations\TIBCO_RV\Channel.cs" />
     <Compile Include="DTOs\CustomMessage.cs" />
     <Compile Include="Enums.cs" />
@@ -84,7 +87,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Implementations\Service_Bus\" />
     <Folder Include="TIBCO_RV\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,13 +13,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Frwk = TIBCO.Rendezvous;
 
-namespace Messaging.POC.BLL.Implementations.TIBCO_RV
+namespace Messaging.POC.BLL.Implementations.Service_Bus
 {
     public class Receiver : IReceiver
     {
-        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
-        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
-        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
+        private string _sendMessageSubject = "MS.Send.TEST";
+        private string _sendRequestMessageSubject = "MS.SendRequest.TEST";
+        private string _sendReplyMessageSubject = "MS.SendReply.TEST";
         private string _service = ConfigurationManager.AppSettings["service"];
         private string _network = ConfigurationManager.AppSettings["network"];
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
