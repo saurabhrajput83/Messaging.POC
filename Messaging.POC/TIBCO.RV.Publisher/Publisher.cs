@@ -1,5 +1,6 @@
 ﻿using Messaging.POC.BLL;
 using Messaging.POC.BLL.DTOs;
+using Messaging.POC.BLL.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -14,10 +15,11 @@ using TIBCO.Rendezvous;
 
 namespace TIBCO.RV.Publisher
 {
-    public class Publisher
+    public class Publisher : IPublisher
     {
         private string _sendMessageSubject = "MS.Send.TEST";
         private string _sendRequestMessageSubject = "MS.SendRequest.TEST";
+        private string _sendReplyMessageSubject = "MS.SendReply.TEST";
         private string _service = ConfigurationManager.AppSettings["service"];
         private string _network = ConfigurationManager.AppSettings["network"];
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
@@ -38,7 +40,7 @@ namespace TIBCO.RV.Publisher
 
                 while (flag)
                 {
-                    Console.WriteLine("Press 1 to test Send, 2 to test SendRequest, and x to exit");
+                    Console.WriteLine("Press 1 to test Send, 2 to test SendRequest, 3 to test SendRequest2, 4 to test SendReply, and x to exit");
                     var line = Console.ReadLine().ToUpper();
 
 
@@ -50,6 +52,12 @@ namespace TIBCO.RV.Publisher
                             break;
                         case "2":
                             SendRequestMessage();
+                            break;
+                        case "3":
+                            SendRequestMessage2();
+                            break;
+                        case "4":
+                            SendReplyMessage();
                             break;
                         case "X":
                             flag = false;
@@ -69,29 +77,18 @@ namespace TIBCO.RV.Publisher
             }
         }
 
-        public void SendMessage()
+        private void SendMessage()
         {
-            CustomMessage customMsg = new CustomMessage();
+            CustomMessage customMsg = GetCustomMessage(_sendMessageSubject, 1);
 
-            customMsg.SendSubject = _sendMessageSubject;
-            customMsg.Name = "Saurabh";
-            customMsg.Age = 35;
-            customMsg.Department = "I.T.";
-            customMsg.Address = "Whitefield";
 
             _channel.SendMessage(customMsg);
             Console.WriteLine("SendMessage Completed..");
         }
 
-        public void SendRequestMessage()
+        private void SendRequestMessage()
         {
-            CustomMessage customMsg = new CustomMessage();
-
-            customMsg.SendSubject = _sendRequestMessageSubject;
-            customMsg.Name = "Saurabh >>";
-            customMsg.Age = 39;
-            customMsg.Department = "I.T. >>";
-            customMsg.Address = "Whitefield >>";
+            CustomMessage customMsg = GetCustomMessage(_sendRequestMessageSubject, 2);
 
             Message msg = _channel.SendRequestMessage(customMsg);
             CustomMessage customMsg2 = _channel.ConvertToCustomMessage(msg);
@@ -103,6 +100,48 @@ namespace TIBCO.RV.Publisher
             Console.WriteLine("SendRequestMessage Completed..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage2: {customMsg2Str}");
+        }
+
+        private void SendRequestMessage2()
+        {
+            CustomMessage customMsg = GetCustomMessage(_sendRequestMessageSubject, 3);
+            customMsg.ReplySubject = Guid.NewGuid().ToString();
+
+            Message msg = _channel.SendRequestMessage(customMsg);
+            CustomMessage customMsg2 = _channel.ConvertToCustomMessage(msg);
+
+            string msgStr = JsonConvert.SerializeObject(msg);
+            string customMsg2Str = JsonConvert.SerializeObject(customMsg2);
+
+
+            Console.WriteLine("SendRequestMessage2 Completed..");
+            Console.WriteLine($"Message: {msgStr}");
+            Console.WriteLine($"CustomMessage2: {customMsg2Str}");
+        }
+
+        private void SendReplyMessage()
+        {
+
+            CustomMessage customMsg = GetCustomMessage(_sendMessageSubject, 4);
+            customMsg.ReplySubject = _sendReplyMessageSubject;
+
+            _channel.SendMessage(customMsg);
+
+
+            Console.WriteLine("SendReplyMessage Completed..");
+        }
+
+        private CustomMessage GetCustomMessage(string sendSubject, int counter)
+        {
+            CustomMessage customMsg = new CustomMessage();
+
+            customMsg.SendSubject = sendSubject;
+            customMsg.Name = $"Saurabh {counter}";
+            customMsg.Age = 39;
+            customMsg.Department = $"I.T. {counter}";
+            customMsg.Address = $"Whitefield {counter}";
+
+            return customMsg;
         }
 
     }
