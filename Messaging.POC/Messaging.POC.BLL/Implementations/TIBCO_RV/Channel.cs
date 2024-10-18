@@ -1,4 +1,5 @@
 ﻿using Messaging.POC.BLL.DTOs;
+using Messaging.POC.BLL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TIBCO.Rendezvous;
 
-namespace Messaging.POC.BLL
+namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 {
-    public class Channel
+    public class Channel : IChannel
     {
         private Transport _transport;
         private double _timeout = 5000;
@@ -25,17 +26,21 @@ namespace Messaging.POC.BLL
             _transport.Send(msg);
         }
 
-        public Message SendRequestMessage(CustomMessage customMsg)
+        public CustomMessage SendRequestMessage(CustomMessage customMsg)
         {
             Message msg = ConvertToTibcoMessage(customMsg);
 
             Message replyMsg = _transport.SendRequest(msg, _timeout);
 
-            return replyMsg;
+            return ConvertToCustomMessage(replyMsg);
         }
 
-        public void SendReplyMessage(Message replyMsg, Message msg)
+        public void SendReplyMessage(CustomMessage customReplyMsg, CustomMessage customMsg)
         {
+            Message replyMsg = ConvertToTibcoMessage(customReplyMsg);
+            Message msg = ConvertToTibcoMessage(customMsg);
+
+
             _transport.SendReply(replyMsg, msg);
 
         }
