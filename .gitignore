@@ -18,3 +18,5 @@
 /Messaging.POC/Messaging.POC.Publisher/obj/Debug
 /Messaging.POC/Messaging.POC.Receiver/obj/Debug
 /Messaging.POC/Messaging.POC.Receiver/bin/Debug
+/Messaging.POC/ServiceBus.Framework/bin/Debug
+/Messaging.POC/ServiceBus.Framework/obj/Debug
