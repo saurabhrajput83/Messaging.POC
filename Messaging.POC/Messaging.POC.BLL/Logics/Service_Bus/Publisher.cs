@@ -76,7 +76,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         private void SendMessage()
         {
-            CustomMessage customMsg = GetCustomMessage(_sendMessageSubject, 1);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendMessageSubject, 1);
 
 
             _channel.SendMessage(customMsg);
@@ -85,7 +85,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         private void SendRequestMessage()
         {
-            CustomMessage customMsg = GetCustomMessage(_sendRequestMessageSubject, 2);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendRequestMessageSubject, 2);
 
             CustomMessage responseMsg = _channel.SendRequestMessage(customMsg);
 
@@ -101,7 +101,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private void SendReplyMessage()
         {
 
-            CustomMessage customMsg = GetCustomMessage(_sendMessageSubject, 3);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendMessageSubject, 3);
             customMsg.ReplySubject = _sendReplyMessageSubject;
 
             _channel.SendMessage(customMsg);
@@ -111,19 +111,6 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
             Console.WriteLine($"\n{_messagingType} SendReplyMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
-        }
-
-        private CustomMessage GetCustomMessage(string sendSubject, int counter)
-        {
-            CustomMessage customMsg = new CustomMessage();
-
-            customMsg.SendSubject = sendSubject;
-            customMsg.Name = $"Saurabh {counter}";
-            customMsg.Age = 39;
-            customMsg.Department = $"I.T. {counter}";
-            customMsg.Address = $"Whitefield {counter}";
-
-            return customMsg;
         }
 
     }

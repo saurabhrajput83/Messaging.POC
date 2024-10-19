@@ -25,7 +25,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
         private Frwk.Transport _transport;
         private Channel _channel;
-        private Frwk.Queue _queue;
+
         private string _messagingType = MessagingType.TIBCO_RV.ToString();
 
         public void Run()
@@ -36,40 +36,16 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
                 _transport = new Frwk.NetTransport(_service, _network, _daemon);
                 _channel = new Channel(_transport);
-                _queue = Frwk.Queue.Default;
 
+                _channel.Subscribe(_sendMessageSubject, SendListener_MessageReceived);
 
-                Frwk.Listener sendListener = new Frwk.Listener(
-                       _queue,
-                        _transport,
-                        _sendMessageSubject,
-                        new object()
-                        );
-                sendListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendListener_MessageReceived);
+                _channel.Subscribe(_sendRequestMessageSubject, SendRequestListener_MessageReceived);
 
-
-                Frwk.Listener sendRequestListener = new Frwk.Listener(
-                       _queue,
-                        _transport,
-                        _sendRequestMessageSubject,
-                        new object()
-                        );
-                sendRequestListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendRequestListener_MessageReceived);
-
-                Frwk.Listener sendReplyListener = new Frwk.Listener(
-                      _queue,
-                       _transport,
-                       _sendReplyMessageSubject,
-                       new object()
-                       );
-                sendReplyListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendReplyListener_MessageReceived);
+                _channel.Subscribe(_sendReplyMessageSubject, SendReplyListener_MessageReceived);
 
                 Console.WriteLine($"\n{_messagingType} Receiver started running..");
 
-
-                var dispacher = new Frwk.Dispatcher(_queue);
-                dispacher.Join();
-
+                _channel.Dispatch();
 
                 Frwk.Environment.Close();
                 Console.WriteLine("Exiting..");
@@ -82,81 +58,62 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
             }
         }
 
-        private void SendListener_MessageReceived(object listener, Frwk.MessageReceivedEventArgs args)
+        private void SendListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
 
-            Frwk.Message msg = args.Message;
-            CustomMessage customMsg = _channel.ConvertToCustomMessage(msg);
+            CustomMessage customMsg = args.Message;
 
-            string msgStr = JsonConvert.SerializeObject(msg);
+
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
             Console.WriteLine($"\n{_messagingType} SendListener_Message Received..");
-            Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
-            if (!string.IsNullOrEmpty(msg.ReplySubject))
+            if (!string.IsNullOrEmpty(customMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = GetCustomMessage("Sajid 1", 45, "Exec 1", "Marathalli 1");
+                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 1", 45, "Exec 1", "Marathalli 1");
                 _channel.SendReplyMessage(replyCustomMessage, customMsg);
             }
 
         }
 
-        private void SendRequestListener_MessageReceived(object listener, Frwk.MessageReceivedEventArgs args)
+        private void SendRequestListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
 
-            Frwk.Message msg = args.Message;
-            CustomMessage customMsg = _channel.ConvertToCustomMessage(msg);
+            CustomMessage customMsg = args.Message;
 
-            string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
             Console.WriteLine($"\n{_messagingType} SendRequestListener_Message Received..");
-            Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
 
-            if (!string.IsNullOrEmpty(msg.ReplySubject))
+            if (!string.IsNullOrEmpty(customMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = GetCustomMessage("Sajid 2", 46, "Exec 2", "Marathalli 2");
+                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 2", 46, "Exec 2", "Marathalli 2");
                 _channel.SendReplyMessage(replyCustomMessage, customMsg);
             }
         }
 
-        private void SendReplyListener_MessageReceived(object listener, Frwk.MessageReceivedEventArgs args)
+        private void SendReplyListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
+            CustomMessage customMsg = args.Message;
 
-            Frwk.Message msg = args.Message;
-            CustomMessage customMsg = _channel.ConvertToCustomMessage(msg);
-
-            string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
             Console.WriteLine($"\n{_messagingType} SendReplyListener_Message Received..");
-            Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
-            if (!string.IsNullOrEmpty(msg.ReplySubject))
+            if (!string.IsNullOrEmpty(customMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = GetCustomMessage("Sajid 3", 47, "Exec 3", "Marathalli 3");
+                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 3", 47, "Exec 3", "Marathalli 3");
                 _channel.SendReplyMessage(replyCustomMessage, customMsg);
             }
 
         }
 
-        private CustomMessage GetCustomMessage(string name, int age, string department, string address)
-        {
-            CustomMessage customMsg = new CustomMessage();
 
-            customMsg.Name = name;
-            customMsg.Age = age;
-            customMsg.Department = department;
-            customMsg.Address = address;
-
-            return customMsg;
-        }
     }
 }

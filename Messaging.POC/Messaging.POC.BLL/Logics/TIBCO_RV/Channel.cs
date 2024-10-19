@@ -1,5 +1,7 @@
 ﻿using Messaging.POC.BLL.DTOs;
 using Messaging.POC.BLL.Logics.Interfaces;
+using Messaging.POC.BLL.Logics.Service_Bus;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +14,15 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
     public class Channel : IChannel
     {
         private Frwk.Transport _transport;
+        private Frwk.Queue _queue;
         private double _timeout = 5000;
+        private Dictionary<string, Frwk.Listener> _listener;
 
         public Channel(Frwk.Transport transport)
         {
             _transport = transport;
+            _queue = Frwk.Queue.Default;
+            _listener = new Dictionary<string, Frwk.Listener>();
         }
 
         public void SendMessage(CustomMessage customMsg)
@@ -42,6 +48,54 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
 
             _transport.SendReply(replyMsg, msg);
+
+        }
+
+        public bool Subscribe(string subject, CustomMessageReceivedEventHandler messageHandler)
+        {
+            if (_listener.ContainsKey(subject))
+                return false;
+
+            Frwk.Listener listener = new Frwk.Listener(
+                  _queue,
+                    OnMessageReceivedEventHandler,
+                    _transport,
+                   subject,
+                   messageHandler
+                   );
+
+
+            _listener.Add(subject, listener);
+            return true;
+        }
+
+        public void Dispatch()
+        {
+            var dispacher = new Frwk.Dispatcher(_queue);
+            dispacher.Join();
+        }
+
+        protected void OnMessageReceivedEventHandler(object listener, Frwk.MessageReceivedEventArgs args)
+        {
+
+            Frwk.Message msg = args.Message;
+            CustomMessage customMsg = ConvertToCustomMessage(msg);
+
+            string msgStr = JsonConvert.SerializeObject(msg);
+            string customMsgStr = JsonConvert.SerializeObject(customMsg);
+
+
+            Console.WriteLine($"\nOnMessageReceivedEventHandler Received..");
+            Console.WriteLine($"Message: {msgStr}");
+            Console.WriteLine($"CustomMessage: {customMsgStr}");
+
+            CustomMessageReceivedEventHandler handler = (CustomMessageReceivedEventHandler)args.Closure;
+
+            if (handler != null)
+            {
+                CustomMessageReceivedEventArgs cmrArgs = new CustomMessageReceivedEventArgs(customMsg);
+                handler(this, cmrArgs);
+            }
 
         }
 

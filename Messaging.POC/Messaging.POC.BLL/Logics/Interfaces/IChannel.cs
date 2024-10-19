@@ -1,4 +1,5 @@
 ﻿using Messaging.POC.BLL.DTOs;
+using Messaging.POC.BLL.Logics.Service_Bus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,10 @@ namespace Messaging.POC.BLL.Logics.Interfaces
         void SendMessage(CustomMessage customMsg);
         CustomMessage SendRequestMessage(CustomMessage customMsg);
         void SendReplyMessage(CustomMessage customReplyMsg, CustomMessage customMsg);
+
+        bool Subscribe(string subject, CustomMessageReceivedEventHandler messageHandler);
+
+        void Dispatch();
 
     }
 }
