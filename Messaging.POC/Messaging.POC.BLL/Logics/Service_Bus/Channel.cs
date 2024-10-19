@@ -17,13 +17,13 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private Frwk.Transport _transport;
         private Frwk.Queue _queue;
         private double _timeout = 5000;
-        private Dictionary<string, Frwk.Listener> _listener;
+        private Dictionary<string, Frwk.Listener> _listeners;
 
         public Channel(Frwk.Transport transport)
         {
             _transport = transport;
             _queue = Frwk.Queue.Default;
-            _listener = new Dictionary<string, Frwk.Listener>();
+            _listeners = new Dictionary<string, Frwk.Listener>();
         }
 
         public void SendMessage(CustomMessage customMsg)
@@ -54,7 +54,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         public bool Subscribe(string subject, CustomMessageReceivedEventHandler messageHandler)
         {
-            if (_listener.ContainsKey(subject))
+            if (_listeners.ContainsKey(subject))
                 return false;
 
             Frwk.Listener listener = new Frwk.Listener(
@@ -66,14 +66,14 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                    );
 
 
-            _listener.Add(subject, listener);
+            _listeners.Add(subject, listener);
             return true;
         }
 
         public void Dispatch()
         {
-            var dispacher = new Frwk.Dispatcher(_queue);
-            dispacher.Join();
+            var dispacher = new Frwk.Dispatcher(_queue, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
+            dispacher.Join(_listeners);
         }
 
         protected void OnMessageReceivedEventHandler(object listener, Frwk.MessageReceivedEventArgs args)
@@ -104,14 +104,16 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         {
             Frwk.Message msg = new Frwk.Message();
 
-            msg.SendSubject = customMsg.SendSubject;
-            msg.ReplySubject = customMsg.ReplySubject;
+            if (customMsg != null)
+            {
+                msg.SendSubject = customMsg.SendSubject;
+                msg.ReplySubject = customMsg.ReplySubject;
 
-            msg.AddField(new Frwk.MessageField("Name", customMsg.Name));
-            msg.AddField(new Frwk.MessageField("Age", customMsg.Age));
-            msg.AddField(new Frwk.MessageField("Department", customMsg.Department));
-            msg.AddField(new Frwk.MessageField("Address", customMsg.Address));
-
+                msg.AddField(new Frwk.MessageField("Name", customMsg.Name));
+                msg.AddField(new Frwk.MessageField("Age", customMsg.Age));
+                msg.AddField(new Frwk.MessageField("Department", customMsg.Department));
+                msg.AddField(new Frwk.MessageField("Address", customMsg.Address));
+            }
             return msg;
         }
 
@@ -119,13 +121,16 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         {
             CustomMessage customMsg = new CustomMessage();
 
-            customMsg.SendSubject = msg.SendSubject;
-            customMsg.ReplySubject = msg.ReplySubject;
+            if (msg != null)
+            {
+                customMsg.SendSubject = msg.SendSubject;
+                customMsg.ReplySubject = msg.ReplySubject;
 
-            customMsg.Name = (string)msg.GetField("Name").Value;
-            customMsg.Age = (int)msg.GetField("Age").Value;
-            customMsg.Department = (string)msg.GetField("Department").Value;
-            customMsg.Address = (string)msg.GetField("Address").Value;
+                customMsg.Name = Convert.ToString(msg.GetField("Name").Value);
+                customMsg.Age = Convert.ToInt32(msg.GetField("Age").Value);
+                customMsg.Department = Convert.ToString(msg.GetField("Department").Value);
+                customMsg.Address = Convert.ToString(msg.GetField("Address").Value);
+            }
 
             return customMsg;
         }

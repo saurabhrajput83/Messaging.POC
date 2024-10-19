@@ -17,14 +17,6 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 {
     public class Receiver : IReceiver
     {
-        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
-        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
-        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
-        private string _service = ConfigurationManager.AppSettings["service"];
-        private string _network = ConfigurationManager.AppSettings["network"];
-        private string _daemon = ConfigurationManager.AppSettings["daemon"];
-        private string _namespace_connection_string = ConfigurationManager.AppSettings["namespace_connection_string"];
-        private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
         private Frwk.Transport _transport;
         private Channel _channel;
         private Frwk.Queue _queue;
@@ -36,14 +28,14 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
             {
                 Frwk.Environment.Open();
 
-                _transport = new Frwk.NetTransport(_namespace_connection_string, _queue_name);
+                _transport = new Frwk.NetTransport(Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
 
-                _channel.Subscribe(_sendMessageSubject, SendListener_MessageReceived);
+                _channel.Subscribe(Configs.SENDMESSAGESUBJECT, SendListener_MessageReceived);
 
-                _channel.Subscribe(_sendRequestMessageSubject, SendRequestListener_MessageReceived);
+                _channel.Subscribe(Configs.SENDREQUESTMESSAGESUBJECT, SendRequestListener_MessageReceived);
 
-                _channel.Subscribe(_sendReplyMessageSubject, SendReplyListener_MessageReceived);
+                _channel.Subscribe(Configs.SENDREPLYMESSAGESUBJECT, SendReplyListener_MessageReceived);
 
                 Console.WriteLine($"\n{_messagingType} Receiver started running..");
 

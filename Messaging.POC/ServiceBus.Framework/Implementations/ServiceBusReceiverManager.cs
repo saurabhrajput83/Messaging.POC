@@ -11,23 +11,23 @@ using System.Threading.Tasks;
 
 namespace ServiceBus.Framework.Implementations
 {
-    public class ServiceBusQueueManager
+    public class ServiceBusReceiverManager
     {
         private ServiceBusQueueSender _sender;
         private ServiceBusQueueReceiver _receiver;
         private string _namespace_connection_string = string.Empty;
-        private string _queue_name = string.Empty;
-        private Dictionary<string, Message> _messages;
+        private string _topic_or_queue_name = string.Empty;
+        private string _subscription_name = string.Empty;
         private Dictionary<string, Listener> _listeners;
 
-        public ServiceBusQueueManager(string namespace_connection_string, string queue_name)
+        public ServiceBusReceiverManager(string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
             _namespace_connection_string = namespace_connection_string;
-            _queue_name = queue_name;
+            _topic_or_queue_name = topic_or_queue_name;
+            _subscription_name = subscription_name;
 
-            _sender = new ServiceBusQueueSender(_namespace_connection_string, _queue_name);
-            _receiver = new ServiceBusQueueReceiver(_namespace_connection_string, _queue_name);
-            _messages = new Dictionary<string, Message>();
+            _sender = new ServiceBusQueueSender(_namespace_connection_string, _topic_or_queue_name);
+            _receiver = new ServiceBusQueueReceiver(_namespace_connection_string, _topic_or_queue_name);
 
         }
 
@@ -40,45 +40,6 @@ namespace ServiceBus.Framework.Implementations
         public async Task StopListening()
         {
             await _receiver.Stop();
-        }
-
-        public async Task SendMessage(Message message)
-        {
-            string subject = SubjectHelper.CreateSubject(ActionTypes.Send, message.SendSubject);
-            string body = JsonConvert.SerializeObject(message);
-
-            await _sender.Send(subject, body);
-        }
-
-        public async Task<Message> SendRequestMessage(Message requestMessage, double timeout)
-        {
-            string subject = SubjectHelper.CreateSubject(ActionTypes.SendRequest, requestMessage.SendSubject);
-            string body = JsonConvert.SerializeObject(requestMessage);
-
-            await _sender.Send(subject, body);
-
-            Message responseMessage = null;
-            DateTime maxTime = DateTime.Now.AddMilliseconds(timeout);
-            DateTime currentTime = DateTime.Now;
-
-            while (currentTime.Millisecond < maxTime.Millisecond)
-            {
-                if (_messages.ContainsKey(subject))
-                {
-                    responseMessage = _messages[subject];
-                    break;
-                }
-                currentTime = DateTime.Now;
-            }
-
-            return responseMessage;
-
-        }
-
-        public async Task SendReplyMessage(Message reply, Message request)
-        {
-            string body = JsonConvert.SerializeObject(reply);
-            await _sender.Send(ActionTypes.SendReply.ToString(), body);
         }
 
         // handle received messages
@@ -98,6 +59,9 @@ namespace ServiceBus.Framework.Implementations
             SubjectHelper.ParseSubject(subject, out actionType, out sendSubject);
 
 
+            // complete the message. message is deleted from the queue. 
+
+
             if (_listeners.ContainsKey(sendSubject))
             {
                 Listener listener = _listeners[sendSubject];
@@ -105,20 +69,6 @@ namespace ServiceBus.Framework.Implementations
 
                 listener.MessageReceivedEventHandler(listener, mrArgs);
             }
-
-            // complete the message. message is deleted from the queue. 
-
-
-            switch (actionType)
-            {
-                case ActionTypes.Send:
-                    break;
-                case ActionTypes.SendRequest:
-                    break;
-                case ActionTypes.SendReply:
-                    break;
-            }
-
 
             //MessageReceivedEventArgs mrea = new MessageReceivedEventArgs(msg, _closure);
 

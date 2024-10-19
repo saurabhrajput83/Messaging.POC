@@ -103,13 +103,16 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         {
             Frwk.Message msg = new Frwk.Message();
 
-            msg.SendSubject = customMsg.SendSubject;
-            msg.ReplySubject = customMsg.ReplySubject;
+            if (customMsg != null)
+            {
+                msg.SendSubject = customMsg.SendSubject;
+                msg.ReplySubject = customMsg.ReplySubject;
 
-            msg.AddField(new Frwk.MessageField("Name", customMsg.Name));
-            msg.AddField(new Frwk.MessageField("Age", customMsg.Age));
-            msg.AddField(new Frwk.MessageField("Department", customMsg.Department));
-            msg.AddField(new Frwk.MessageField("Address", customMsg.Address));
+                msg.AddField(new Frwk.MessageField("Name", customMsg.Name));
+                msg.AddField(new Frwk.MessageField("Age", customMsg.Age));
+                msg.AddField(new Frwk.MessageField("Department", customMsg.Department));
+                msg.AddField(new Frwk.MessageField("Address", customMsg.Address));
+            }
 
             return msg;
         }
@@ -118,13 +121,16 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         {
             CustomMessage customMsg = new CustomMessage();
 
-            customMsg.SendSubject = msg.SendSubject;
-            customMsg.ReplySubject = msg.ReplySubject;
+            if (msg != null)
+            {
+                customMsg.SendSubject = msg.SendSubject;
+                customMsg.ReplySubject = msg.ReplySubject;
 
-            customMsg.Name = (string)msg.GetField("Name").Value;
-            customMsg.Age = (int)msg.GetField("Age").Value;
-            customMsg.Department = (string)msg.GetField("Department").Value;
-            customMsg.Address = (string)msg.GetField("Address").Value;
+                customMsg.Name = (string)msg.GetField("Name").Value;
+                customMsg.Age = (int)msg.GetField("Age").Value;
+                customMsg.Department = (string)msg.GetField("Department").Value;
+                customMsg.Address = (string)msg.GetField("Address").Value;
+            }
 
             return customMsg;
         }

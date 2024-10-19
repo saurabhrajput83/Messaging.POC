@@ -17,12 +17,6 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 {
     public class Receiver : IReceiver
     {
-        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
-        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
-        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
-        private string _service = ConfigurationManager.AppSettings["service"];
-        private string _network = ConfigurationManager.AppSettings["network"];
-        private string _daemon = ConfigurationManager.AppSettings["daemon"];
         private Frwk.Transport _transport;
         private Channel _channel;
 
@@ -34,14 +28,14 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
             {
                 Frwk.Environment.Open();
 
-                _transport = new Frwk.NetTransport(_service, _network, _daemon);
+                _transport = new Frwk.NetTransport(Configs.SERVICE, Configs.NETWORK, Configs.DAEMON);
                 _channel = new Channel(_transport);
 
-                _channel.Subscribe(_sendMessageSubject, SendListener_MessageReceived);
+                _channel.Subscribe(Configs.SENDMESSAGESUBJECT, SendListener_MessageReceived);
 
-                _channel.Subscribe(_sendRequestMessageSubject, SendRequestListener_MessageReceived);
+                _channel.Subscribe(Configs.SENDREQUESTMESSAGESUBJECT, SendRequestListener_MessageReceived);
 
-                _channel.Subscribe(_sendReplyMessageSubject, SendReplyListener_MessageReceived);
+                _channel.Subscribe(Configs.SENDREPLYMESSAGESUBJECT, SendReplyListener_MessageReceived);
 
                 Console.WriteLine($"\n{_messagingType} Receiver started running..");
 

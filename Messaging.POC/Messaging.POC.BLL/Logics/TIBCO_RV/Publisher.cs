@@ -17,12 +17,6 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 {
     public class Publisher : IPublisher
     {
-        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
-        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
-        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
-        private string _service = ConfigurationManager.AppSettings["service"];
-        private string _network = ConfigurationManager.AppSettings["network"];
-        private string _daemon = ConfigurationManager.AppSettings["daemon"];
         private Frwk.Transport _transport;
         private Channel _channel;
         private string _messagingType = MessagingType.TIBCO_RV.ToString();
@@ -34,7 +28,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
                 Frwk.Environment.Open();
 
 
-                _transport = new Frwk.NetTransport(_service, _network, _daemon);
+                _transport = new Frwk.NetTransport(Configs.SERVICE, Configs.NETWORK, Configs.DAEMON);
                 _channel = new Channel(_transport);
                 Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;
@@ -77,7 +71,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         private void SendMessage()
         {
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendMessageSubject, 1);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDMESSAGESUBJECT, 1);
 
 
             _channel.SendMessage(customMsg);
@@ -86,7 +80,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         private void SendRequestMessage()
         {
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendRequestMessageSubject, 2);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDREQUESTMESSAGESUBJECT, 2);
 
             CustomMessage responseMsg = _channel.SendRequestMessage(customMsg);
 
@@ -102,8 +96,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         private void SendReplyMessage()
         {
 
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendMessageSubject, 3);
-            customMsg.ReplySubject = _sendReplyMessageSubject;
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDMESSAGESUBJECT, 3);
+            customMsg.ReplySubject = Configs.SENDREPLYMESSAGESUBJECT;
 
             _channel.SendMessage(customMsg);
 

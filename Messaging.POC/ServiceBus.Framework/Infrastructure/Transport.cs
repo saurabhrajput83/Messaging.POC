@@ -14,26 +14,27 @@ namespace ServiceBus.Framework.Infrastructure
     public abstract class Transport
     {
 
-        private ServiceBusQueueManager _serviceBusQueueManager = null;
+        private ServiceBusSenderManager _serviceBusSenderManager = null;
 
-        protected Transport(string namespace_connection_string, string queue_name)
+        protected Transport(string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            _serviceBusQueueManager = new ServiceBusQueueManager(namespace_connection_string, queue_name);
+            _serviceBusSenderManager = new ServiceBusSenderManager(namespace_connection_string, topic_or_queue_name, subscription_name);
+            Task.Run(async () => await _serviceBusSenderManager.StartListening()).GetAwaiter().GetResult();
         }
 
         public virtual void Send(Message message)
         {
-            Task.Run(async () => await _serviceBusQueueManager.SendMessage(message)).GetAwaiter().GetResult();
+            Task.Run(async () => await _serviceBusSenderManager.SendMessage(message)).GetAwaiter().GetResult();
         }
 
         public virtual Message SendRequest(Message requestMessage, double timeout)
         {
-            return Task.Run(async () => await _serviceBusQueueManager.SendRequestMessage(requestMessage, timeout)).GetAwaiter().GetResult();
+            return Task.Run(async () => await _serviceBusSenderManager.SendRequestMessage(requestMessage, timeout)).GetAwaiter().GetResult();
         }
 
         public virtual void SendReply(Message reply, Message request)
         {
-            Task.Run(async () => await _serviceBusQueueManager.SendReplyMessage(reply, request)).GetAwaiter().GetResult();
+            Task.Run(async () => await _serviceBusSenderManager.SendReplyMessage(reply, request)).GetAwaiter().GetResult();
         }
 
     }

@@ -140,7 +140,10 @@
   <ItemGroup>
     <Compile Include="Enums.cs" />
     <Compile Include="Helpers\SubjectHelper.cs" />
-    <Compile Include="Implementations\ServiceBusQueueManager.cs" />
+    <Compile Include="Implementations\ServiceBusTopicSender.cs" />
+    <Compile Include="Implementations\ServiceBusTopicReceiver.cs" />
+    <Compile Include="Implementations\ServiceBusReceiverManager.cs" />
+    <Compile Include="Implementations\ServiceBusSenderManager.cs" />
     <Compile Include="Implementations\ServiceBusQueueReceiver.cs" />
     <Compile Include="Implementations\ServiceBusQueueSender.cs" />
     <Compile Include="Infrastructure\Dispatcher.cs" />

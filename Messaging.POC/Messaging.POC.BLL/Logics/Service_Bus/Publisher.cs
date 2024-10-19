@@ -17,11 +17,6 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 {
     public class Publisher : IPublisher
     {
-        private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
-        private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
-        private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
-        private string _namespace_connection_string = ConfigurationManager.AppSettings["namespace_connection_string"];
-        private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
         private Frwk.Transport _transport;
         private Channel _channel;
         private string _messagingType = MessagingType.Service_Bus.ToString();
@@ -33,7 +28,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 Frwk.Environment.Open();
 
 
-                _transport = new Frwk.NetTransport(_namespace_connection_string, _queue_name);
+                _transport = new Frwk.NetTransport(Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
                 Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;
@@ -76,7 +71,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         private void SendMessage()
         {
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendMessageSubject, 1);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDMESSAGESUBJECT, 1);
 
 
             _channel.SendMessage(customMsg);
@@ -85,7 +80,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         private void SendRequestMessage()
         {
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendRequestMessageSubject, 2);
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDREQUESTMESSAGESUBJECT, 2);
 
             CustomMessage responseMsg = _channel.SendRequestMessage(customMsg);
 
@@ -101,8 +96,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private void SendReplyMessage()
         {
 
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(_sendMessageSubject, 3);
-            customMsg.ReplySubject = _sendReplyMessageSubject;
+            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDMESSAGESUBJECT, 3);
+            customMsg.ReplySubject = Configs.SENDREPLYMESSAGESUBJECT;
 
             _channel.SendMessage(customMsg);
 
