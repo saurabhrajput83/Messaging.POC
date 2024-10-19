@@ -25,6 +25,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
         private string _daemon = ConfigurationManager.AppSettings["daemon"];
         private Frwk.Transport _transport;
         private Channel _channel;
+        private string _messagingType = MessagingType.TIBCO_RV.ToString();
 
         public void Run()
         {
@@ -35,7 +36,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 
                 _transport = new Frwk.NetTransport(_service, _network, _daemon);
                 _channel = new Channel(_transport);
-                Console.WriteLine("\nTIBCO RV Publisher started running..");
+                Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;
 
                 while (flag)
@@ -80,7 +81,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
 
 
             _channel.SendMessage(customMsg);
-            Console.WriteLine("\nTIBCO RV SendMessage Completed..");
+            Console.WriteLine($"\n{_messagingType} SendMessage Completed..");
         }
 
         private void SendRequestMessage()
@@ -93,7 +94,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string responseMsgStr = JsonConvert.SerializeObject(responseMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendRequestMessage Completed..");
+            Console.WriteLine($"\n{_messagingType} SendRequestMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
             Console.WriteLine($"responseMsg: {responseMsgStr}");
         }
@@ -109,7 +110,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendReplyMessage Completed..");
+            Console.WriteLine($"\n{_messagingType} SendReplyMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
         }
 

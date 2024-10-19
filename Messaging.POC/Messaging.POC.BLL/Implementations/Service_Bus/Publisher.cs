@@ -24,6 +24,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
         private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
         private Frwk.Transport _transport;
         private Channel _channel;
+        private string _messagingType = MessagingType.Service_Bus.ToString();
 
         public void Run()
         {
@@ -34,7 +35,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
 
                 _transport = new Frwk.NetTransport(_namespace_connection_string, _queue_name);
                 _channel = new Channel(_transport);
-                Console.WriteLine("\nService Bus Publisher started running..");
+                Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;
 
                 while (flag)
@@ -79,7 +80,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
 
 
             _channel.SendMessage(customMsg);
-            Console.WriteLine("\nService Bus SendMessage Completed..");
+            Console.WriteLine($"\n{_messagingType} SendMessage Completed..");
         }
 
         private void SendRequestMessage()
@@ -92,7 +93,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string responseMsgStr = JsonConvert.SerializeObject(responseMsg);
 
 
-            Console.WriteLine("\nService Bus SendRequestMessage Completed..");
+            Console.WriteLine($"\n{_messagingType} SendRequestMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
             Console.WriteLine($"responseMsg: {responseMsgStr}");
         }
@@ -108,7 +109,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nService Bus SendReplyMessage Completed..");
+            Console.WriteLine($"\n{_messagingType} SendReplyMessage Completed..");
             Console.WriteLine($"customMsg: {customMsgStr}");
         }
 

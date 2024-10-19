@@ -28,6 +28,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
         private Frwk.Transport _transport;
         private Channel _channel;
         private Frwk.Queue _queue;
+        private string _messagingType = MessagingType.Service_Bus.ToString();
 
         public void Run()
         {
@@ -66,7 +67,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
                        new object()
                        );
 
-                Console.WriteLine("\nService Bus Receiver started running..");
+                Console.WriteLine($"\n{_messagingType} Receiver started running..");
 
 
                 var dispacher = new Frwk.Dispatcher(_queue);
@@ -94,7 +95,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nService Bus SendListener_Message Received..");
+            Console.WriteLine($"\n{_messagingType} SendListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -115,7 +116,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
-            Console.WriteLine("\nService Bus SendRequestListener_Message Received..");
+            Console.WriteLine($"\n{_messagingType} SendRequestListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -137,7 +138,7 @@ namespace Messaging.POC.BLL.Implementations.Service_Bus
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nService Bus SendReplyListener_Message Received..");
+            Console.WriteLine($"\n{_messagingType} SendReplyListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 

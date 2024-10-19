@@ -26,6 +26,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
         private Frwk.Transport _transport;
         private Channel _channel;
         private Frwk.Queue _queue;
+        private string _messagingType = MessagingType.TIBCO_RV.ToString();
 
         public void Run()
         {
@@ -63,7 +64,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
                        );
                 sendReplyListener.MessageReceived += new Frwk.MessageReceivedEventHandler(SendReplyListener_MessageReceived);
 
-                Console.WriteLine("\nTIBCO RV Receiver started running..");
+                Console.WriteLine($"\n{_messagingType} Receiver started running..");
 
 
                 var dispacher = new Frwk.Dispatcher(_queue);
@@ -91,7 +92,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendListener_Message Received..");
+            Console.WriteLine($"\n{_messagingType} SendListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -112,7 +113,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
-            Console.WriteLine("\nTIBCO RV SendRequestListener_Message Received..");
+            Console.WriteLine($"\n{_messagingType} SendRequestListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
@@ -134,7 +135,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
 
 
-            Console.WriteLine("\nTIBCO RV SendReplyListener_Message Received..");
+            Console.WriteLine($"\n{_messagingType} SendReplyListener_Message Received..");
             Console.WriteLine($"Message: {msgStr}");
             Console.WriteLine($"CustomMessage: {customMsgStr}");
 
