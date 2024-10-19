@@ -12,20 +12,15 @@ namespace ServiceBus.Framework.Implementations
 
         private ServiceBusClient _client;
         private ServiceBusProcessor _processor;
-        private string _namespace_connection_string = string.Empty;
-        private string _topic_or_queue_name = string.Empty;
 
         public ServiceBusQueueReceiver(string namespace_connection_string, string topic_or_queue_name)
         {
-            _namespace_connection_string = namespace_connection_string;
-            _topic_or_queue_name = topic_or_queue_name;
-
             var clientOptions = new ServiceBusClientOptions()
             {
                 TransportType = ServiceBusTransportType.AmqpWebSockets
             };
 
-            _client = new ServiceBusClient(_namespace_connection_string, clientOptions);
+            _client = new ServiceBusClient(namespace_connection_string, clientOptions);
             _processor = _client.CreateProcessor(topic_or_queue_name, new ServiceBusProcessorOptions());
 
         }

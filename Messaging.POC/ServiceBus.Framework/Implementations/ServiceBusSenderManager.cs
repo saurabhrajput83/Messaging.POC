@@ -22,7 +22,6 @@ namespace ServiceBus.Framework.Implementations
         private SendRequestLogic _sendRequestLogic;
 
 
-
         public ServiceBusSenderManager(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
             if (serviceBusType == ServiceBusType.Topic)
@@ -97,7 +96,6 @@ namespace ServiceBus.Framework.Implementations
         {
             ActionTypes actionType;
             string sendSubject;
-
             string messageId = pmArgs.Message.MessageId;
             string subject = pmArgs.Message.Subject.ToString();
             string body = pmArgs.Message.Body.ToString();

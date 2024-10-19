@@ -16,30 +16,23 @@ namespace ServiceBus.Framework.Implementations
     {
         private IServiceBusSender _sender;
         private IServiceBusReceiver _receiver;
-        private string _namespace_connection_string = string.Empty;
-        private string _topic_or_queue_name = string.Empty;
-        private string _subscription_name = string.Empty;
         private Dictionary<string, Listener> _listeners;
 
         public ServiceBusReceiverManager(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            _namespace_connection_string = namespace_connection_string;
-            _topic_or_queue_name = topic_or_queue_name;
-            _subscription_name = subscription_name;
-
             if (serviceBusType == ServiceBusType.Topic)
             {
-                _sender = new ServiceBusTopicSender(_namespace_connection_string, _topic_or_queue_name, subscription_name);
-                _receiver = new ServiceBusTopicReceiver(_namespace_connection_string, _topic_or_queue_name, subscription_name);
+                _sender = new ServiceBusTopicSender(namespace_connection_string, topic_or_queue_name, subscription_name);
+                _receiver = new ServiceBusTopicReceiver(namespace_connection_string, topic_or_queue_name, subscription_name);
             }
             else if (serviceBusType == ServiceBusType.Queue)
             {
-                _sender = new ServiceBusQueueSender(_namespace_connection_string, _topic_or_queue_name);
-                _receiver = new ServiceBusQueueReceiver(_namespace_connection_string, _topic_or_queue_name);
+                _sender = new ServiceBusQueueSender(namespace_connection_string, topic_or_queue_name);
+                _receiver = new ServiceBusQueueReceiver(namespace_connection_string, topic_or_queue_name);
 
             }
 
-
+            _listeners = new Dictionary<string, Listener>();
         }
 
         public async Task StartListening(Dictionary<string, Listener> listeners)
@@ -58,10 +51,10 @@ namespace ServiceBus.Framework.Implementations
         {
             ActionTypes actionType;
             string sendSubject;
-
             string messageId = pmArgs.Message.MessageId;
             string subject = pmArgs.Message.Subject.ToString();
             string body = pmArgs.Message.Body.ToString();
+            Dictionary<string, Listener> listeners = this._listeners;
 
 
             Console.WriteLine($"\nServiceBusReceiverManager Received: {messageId} {subject} {body}");
@@ -73,9 +66,9 @@ namespace ServiceBus.Framework.Implementations
             // complete the message. message is deleted from the queue. 
 
 
-            if (_listeners.ContainsKey(sendSubject))
+            if (listeners.ContainsKey(sendSubject))
             {
-                Listener listener = _listeners[sendSubject];
+                Listener listener = listeners[sendSubject];
                 MessageReceivedEventArgs mrArgs = new MessageReceivedEventArgs(msg, listener.Closure);
 
                 listener.MessageReceivedEventHandler(listener, mrArgs);
