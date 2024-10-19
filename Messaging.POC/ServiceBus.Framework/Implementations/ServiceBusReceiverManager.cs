@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using ServiceBus.Framework.Helpers;
 using ServiceBus.Framework.Infrastructure;
+using ServiceBus.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,28 +14,38 @@ namespace ServiceBus.Framework.Implementations
 {
     public class ServiceBusReceiverManager
     {
-        private ServiceBusQueueSender _sender;
-        private ServiceBusQueueReceiver _receiver;
+        private IServiceBusSender _sender;
+        private IServiceBusReceiver _receiver;
         private string _namespace_connection_string = string.Empty;
         private string _topic_or_queue_name = string.Empty;
         private string _subscription_name = string.Empty;
         private Dictionary<string, Listener> _listeners;
 
-        public ServiceBusReceiverManager(string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        public ServiceBusReceiverManager(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
             _namespace_connection_string = namespace_connection_string;
             _topic_or_queue_name = topic_or_queue_name;
             _subscription_name = subscription_name;
 
-            _sender = new ServiceBusQueueSender(_namespace_connection_string, _topic_or_queue_name);
-            _receiver = new ServiceBusQueueReceiver(_namespace_connection_string, _topic_or_queue_name);
+            if (serviceBusType == ServiceBusType.Topic)
+            {
+                _sender = new ServiceBusTopicSender(_namespace_connection_string, _topic_or_queue_name, subscription_name);
+                _receiver = new ServiceBusTopicReceiver(_namespace_connection_string, _topic_or_queue_name, subscription_name);
+            }
+            else if (serviceBusType == ServiceBusType.Queue)
+            {
+                _sender = new ServiceBusQueueSender(_namespace_connection_string, _topic_or_queue_name);
+                _receiver = new ServiceBusQueueReceiver(_namespace_connection_string, _topic_or_queue_name);
+
+            }
+
 
         }
 
         public async Task StartListening(Dictionary<string, Listener> listeners)
         {
-            await _receiver.Start(MessageHandler, ErrorHandler);
             _listeners = listeners;
+            await _receiver.Start(MessageHandler, ErrorHandler);
         }
 
         public async Task StopListening()
@@ -53,7 +64,7 @@ namespace ServiceBus.Framework.Implementations
             string body = pmArgs.Message.Body.ToString();
 
 
-            Console.WriteLine($"Received: {messageId} {subject} {body}");
+            Console.WriteLine($"\nServiceBusReceiverManager Received: {messageId} {subject} {body}");
 
             Message msg = JsonConvert.DeserializeObject<Message>(body);
             SubjectHelper.ParseSubject(subject, out actionType, out sendSubject);
@@ -75,13 +86,13 @@ namespace ServiceBus.Framework.Implementations
             //if (_messageReceived != null)
             //    _messageReceived(null, mrea);
 
-            //await args.CompleteMessageAsync(args.Message);
+            //await pmArgs.CompleteMessageAsync(args.Message);
         }
 
         // handle any errors when receiving messages
         async Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            Console.WriteLine($"Exception: {args.Exception.ToString()}");
+            Console.WriteLine($"\nServiceBusReceiverManager Exception: {args.Exception.ToString()}");
             //return Task.CompletedTask;
         }
     }

@@ -11,19 +11,18 @@ namespace ServiceBus.Framework.Infrastructure
 {
     public class Dispatcher
     {
-        private ServiceBusReceiverManager _serviceBusReceiverManager = null;
+
         private Queue _queue = null;
 
 
-        public Dispatcher(Queue queue, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        public Dispatcher(Queue queue)
         {
             _queue = queue;
-            _serviceBusReceiverManager = new ServiceBusReceiverManager(namespace_connection_string, topic_or_queue_name, subscription_name);
         }
 
-        public void Join(Dictionary<string, Listener> listeners)
+        public void Join()
         {
-            Task.Run(async () => await _serviceBusReceiverManager.StartListening(listeners)).GetAwaiter().GetResult();
+
         }
     }
 }
