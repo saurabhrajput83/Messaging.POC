@@ -31,17 +31,20 @@ namespace ServiceBus.Framework.Implementations
         }
 
 
-        public async Task Send(string message)
+        public async Task Send(string subject, string body)
         {
             ServiceBusMessageBatch messageBatch = await _sender.CreateMessageBatchAsync();
 
 
             // try adding a message to the batch
 
-            if (!messageBatch.TryAddMessage(new ServiceBusMessage($"{message}")))
+            ServiceBusMessage sbm = new ServiceBusMessage(body);
+            sbm.Subject = subject;
+            
+            if (!messageBatch.TryAddMessage(sbm))
             {
                 // if it is too large for the batch
-                throw new Exception($"The message {message} is too large to fit in the batch.");
+                throw new Exception($"The message {body} is too large to fit in the batch.");
             }
 
 

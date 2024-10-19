@@ -87,9 +87,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TIBCO_RV\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ServiceBus.Framework\ServiceBus.Framework.csproj">
       <Project>{e9c0eb47-0cdc-4cbe-9635-2ba969266b49}</Project>

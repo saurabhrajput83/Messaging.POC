@@ -8,6 +8,6 @@ namespace ServiceBus.Framework.Interfaces
 {
     public interface IServiceBusSender
     {
-        Task Send(string message);
+        Task Send(string header, string body);
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceBus.Framework.Infrastructure
@@ -22,18 +23,17 @@ namespace ServiceBus.Framework.Infrastructure
 
         public virtual void Send(Message message)
         {
-            string messageStr = JsonConvert.SerializeObject(message);
-            Task.Run(async () => await _serviceBusQueueManager.SendMessage(messageStr)).GetAwaiter().GetResult();
+            Task.Run(async () => await _serviceBusQueueManager.SendMessage(message)).GetAwaiter().GetResult();
         }
 
         public virtual Message SendRequest(Message requestMessage, double timeout)
         {
-            return null;
+            return Task.Run(async () => await _serviceBusQueueManager.SendRequest(requestMessage, timeout)).GetAwaiter().GetResult();
         }
 
         public virtual void SendReply(Message reply, Message request)
         {
-
+            Task.Run(async () => await _serviceBusQueueManager.SendReply(reply, request)).GetAwaiter().GetResult();
         }
 
     }

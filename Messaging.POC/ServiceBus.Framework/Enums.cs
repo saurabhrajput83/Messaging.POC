@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ServiceBus.Framework
 {
-    public class Class1
+    public enum ActionTypes
     {
+        Send = 0,
+        SendRequest = 1,
+        SendReply
     }
 }
