@@ -18,7 +18,7 @@ namespace ServiceBus.Framework.Helpers
             int idx = subject.IndexOf("-");
 
             string actionTypeStr = subject.Substring(0, idx);
-            sendSubject = subject.Substring(idx);
+            sendSubject = subject.Substring(idx + 1);
 
             Enum.TryParse<ActionTypes>(actionTypeStr, out actionType);
 

@@ -11,20 +11,24 @@ namespace ServiceBus.Framework.Infrastructure
 {
     public class Listener
     {
-        private string _namespace_connection_string = ConfigurationManager.AppSettings["namespace_connection_string"];
-        private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
-        private ServiceBusQueueManager _serviceBusQueueManager = null;
 
-        public Listener(Queue queue, Transport transport, MessageReceivedEventHandler onMessageReceived, string subject, object closure)
+        private Queue _queue;
+        private MessageReceivedEventHandler _messageReceivedEventHandler;
+        private Transport _transport;
+        private string _subject;
+        private object _closure;
+
+        public MessageReceivedEventHandler MessageReceivedEventHandler => _messageReceivedEventHandler;
+        public object Closure => _closure;
+
+        public Listener(Queue queue, MessageReceivedEventHandler messageReceivedEventHandler, Transport transport, string subject, object closure)
         {
-            _serviceBusQueueManager = new ServiceBusQueueManager(_namespace_connection_string, _queue_name);
+            _queue = queue;
+            _messageReceivedEventHandler = messageReceivedEventHandler;
+            _transport = transport;
+            _subject = subject;
+            _closure = closure;
 
-            Init(onMessageReceived, closure);
-        }
-
-        private void Init(MessageReceivedEventHandler onMessageReceived, object closure)
-        {
-            Task.Run(async () => await _serviceBusQueueManager.StartListening(onMessageReceived, closure)).GetAwaiter().GetResult();
         }
 
     }

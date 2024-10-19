@@ -28,12 +28,12 @@ namespace ServiceBus.Framework.Infrastructure
 
         public virtual Message SendRequest(Message requestMessage, double timeout)
         {
-            return Task.Run(async () => await _serviceBusQueueManager.SendRequest(requestMessage, timeout)).GetAwaiter().GetResult();
+            return Task.Run(async () => await _serviceBusQueueManager.SendRequestMessage(requestMessage, timeout)).GetAwaiter().GetResult();
         }
 
         public virtual void SendReply(Message reply, Message request)
         {
-            Task.Run(async () => await _serviceBusQueueManager.SendReply(reply, request)).GetAwaiter().GetResult();
+            Task.Run(async () => await _serviceBusQueueManager.SendReplyMessage(reply, request)).GetAwaiter().GetResult();
         }
 
     }

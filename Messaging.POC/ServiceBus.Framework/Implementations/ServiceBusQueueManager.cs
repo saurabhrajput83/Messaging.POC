@@ -17,9 +17,8 @@ namespace ServiceBus.Framework.Implementations
         private ServiceBusQueueReceiver _receiver;
         private string _namespace_connection_string = string.Empty;
         private string _queue_name = string.Empty;
-        private event MessageReceivedEventHandler _messageReceived;
-        private object _closure;
         private Dictionary<string, Message> _messages;
+        private Dictionary<string, Listener> _listeners;
 
         public ServiceBusQueueManager(string namespace_connection_string, string queue_name)
         {
@@ -32,12 +31,10 @@ namespace ServiceBus.Framework.Implementations
 
         }
 
-        public async Task StartListening(MessageReceivedEventHandler messageReceived, object closure)
+        public async Task StartListening(Dictionary<string, Listener> listeners)
         {
-            _messageReceived = messageReceived;
-            _closure = closure;
-
             await _receiver.Start(MessageHandler, ErrorHandler);
+            _listeners = listeners;
         }
 
         public async Task StopListening()
@@ -53,12 +50,12 @@ namespace ServiceBus.Framework.Implementations
             await _sender.Send(subject, body);
         }
 
-        public async Task<Message> SendRequest(Message requestMessage, double timeout)
+        public async Task<Message> SendRequestMessage(Message requestMessage, double timeout)
         {
-            string subject = SubjectHelper.CreateSubject(ActionTypes.Send, requestMessage.SendSubject);
+            string subject = SubjectHelper.CreateSubject(ActionTypes.SendRequest, requestMessage.SendSubject);
             string body = JsonConvert.SerializeObject(requestMessage);
 
-            await _sender.Send(ActionTypes.SendRequest.ToString(), body);
+            await _sender.Send(subject, body);
 
             Message responseMessage = null;
             DateTime maxTime = DateTime.Now.AddMilliseconds(timeout);
@@ -78,29 +75,36 @@ namespace ServiceBus.Framework.Implementations
 
         }
 
-        public async Task SendReply(Message reply, Message request)
+        public async Task SendReplyMessage(Message reply, Message request)
         {
             string body = JsonConvert.SerializeObject(reply);
             await _sender.Send(ActionTypes.SendReply.ToString(), body);
         }
 
         // handle received messages
-        async Task MessageHandler(ProcessMessageEventArgs args)
+        async Task MessageHandler(ProcessMessageEventArgs pmArgs)
         {
             ActionTypes actionType;
             string sendSubject;
 
-            string messageId = args.Message.MessageId;
-            string subject = args.Message.Subject.ToString();
-            string body = args.Message.Body.ToString();
+            string messageId = pmArgs.Message.MessageId;
+            string subject = pmArgs.Message.Subject.ToString();
+            string body = pmArgs.Message.Body.ToString();
 
-            //args.
 
             Console.WriteLine($"Received: {messageId} {subject} {body}");
 
             Message msg = JsonConvert.DeserializeObject<Message>(body);
             SubjectHelper.ParseSubject(subject, out actionType, out sendSubject);
 
+
+            if (_listeners.ContainsKey(sendSubject))
+            {
+                Listener listener = _listeners[sendSubject];
+                MessageReceivedEventArgs mrArgs = new MessageReceivedEventArgs(msg, listener.Closure);
+
+                listener.MessageReceivedEventHandler(listener, mrArgs);
+            }
 
             // complete the message. message is deleted from the queue. 
 
@@ -116,19 +120,19 @@ namespace ServiceBus.Framework.Implementations
             }
 
 
-            MessageReceivedEventArgs mrea = new MessageReceivedEventArgs(msg, _closure);
+            //MessageReceivedEventArgs mrea = new MessageReceivedEventArgs(msg, _closure);
 
-            if (_messageReceived != null)
-                _messageReceived(null, mrea);
+            //if (_messageReceived != null)
+            //    _messageReceived(null, mrea);
 
             //await args.CompleteMessageAsync(args.Message);
         }
 
         // handle any errors when receiving messages
-        Task ErrorHandler(ProcessErrorEventArgs args)
+        async Task ErrorHandler(ProcessErrorEventArgs args)
         {
             Console.WriteLine($"Exception: {args.Exception.ToString()}");
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
     }
 }
