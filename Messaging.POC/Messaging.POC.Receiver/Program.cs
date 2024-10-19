@@ -17,6 +17,8 @@ namespace Messaging.POC.Receiver
             bool flag = true;
             IManager manager = new Manager();
 
+            Console.WriteLine("\nReceiver app started..");
+
             while (flag)
             {
                 Console.WriteLine("Press a to test TIBCO RV, b to test Service Bus, and x to exit..");

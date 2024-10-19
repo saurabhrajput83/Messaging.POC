@@ -3,8 +3,10 @@ using Messaging.POC.BLL.Services;
 using Messaging.POC.BLL.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -16,6 +18,8 @@ namespace Messaging.POC.Publisher
         {
             bool flag = true;
             IManager manager = new Manager();
+
+            Console.WriteLine("\nPublisher app started..");
 
             while (flag)
             {
