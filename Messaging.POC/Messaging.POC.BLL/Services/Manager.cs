@@ -1,5 +1,6 @@
 ﻿using Messaging.POC.BLL;
 using Messaging.POC.BLL.Logics.Interfaces;
+using Messaging.POC.BLL.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

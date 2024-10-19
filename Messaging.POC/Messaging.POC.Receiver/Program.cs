@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Messaging.POC.BLL;
+using Messaging.POC.BLL.Services;
+using Messaging.POC.BLL.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Messaging.POC.BLL.Implementations;
-using Messaging.POC.BLL;
+
 
 namespace Messaging.POC.Receiver
 {

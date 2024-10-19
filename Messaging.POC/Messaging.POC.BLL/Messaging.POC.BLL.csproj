@@ -78,7 +78,7 @@
     <Compile Include="Logics\TIBCO_RV\Publisher.cs" />
     <Compile Include="Logics\TIBCO_RV\Receiver.cs" />
     <Compile Include="Logics\Interfaces\IChannel.cs" />
-    <Compile Include="Logics\Interfaces\IManager.cs" />
+    <Compile Include="Services\Interfaces\IManager.cs" />
     <Compile Include="Logics\Interfaces\IPublisher.cs" />
     <Compile Include="Logics\Interfaces\IReceiver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
