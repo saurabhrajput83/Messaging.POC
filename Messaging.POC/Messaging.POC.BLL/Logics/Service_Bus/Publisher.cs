@@ -2,6 +2,7 @@
 using Messaging.POC.BLL.DTOs;
 using Messaging.POC.BLL.Logics.Interfaces;
 using Newtonsoft.Json;
+using ServiceBus.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private Frwk.Transport _transport;
         private Channel _channel;
         private string _messagingType = MessagingType.Service_Bus.ToString();
+        private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public void Run()
         {
@@ -28,7 +30,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 Frwk.Environment.Open();
 
 
-                _transport = new Frwk.NetTransport(Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
+                _transport = new Frwk.NetTransport(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
                 Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;

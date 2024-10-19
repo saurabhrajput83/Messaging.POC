@@ -73,6 +73,7 @@
     <Compile Include="Logics\CustomMessageReceivedEventArgs.cs" />
     <Compile Include="Logics\CustomMessageReceivedEventHandler.cs" />
     <Compile Include="Logics\Service_Bus\Channel.cs" />
+    <Compile Include="Logics\Service_Bus\Helper.cs" />
     <Compile Include="Logics\Service_Bus\Publisher.cs" />
     <Compile Include="Logics\Service_Bus\Receiver.cs" />
     <Compile Include="Logics\TIBCO_RV\Channel.cs" />

@@ -1,6 +1,8 @@
 ﻿using Messaging.POC.BLL.DTOs;
 using Messaging.POC.BLL.Logics.Interfaces;
 using Newtonsoft.Json;
+using ServiceBus.Framework;
+using ServiceBus.Framework.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private Frwk.Queue _queue;
         private double _timeout = 5000;
         private Dictionary<string, Frwk.Listener> _listeners;
+        private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public Channel(Frwk.Transport transport)
         {
@@ -72,8 +75,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         public void Dispatch()
         {
-            var dispacher = new Frwk.Dispatcher(_queue, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
-            dispacher.Join(_listeners);
+            ServiceBusReceiverManager _serviceBusReceiverManager = new ServiceBusReceiverManager(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
+            Task.Run(async () => await _serviceBusReceiverManager.StartListening(_listeners)).GetAwaiter().GetResult();
         }
 
         protected void OnMessageReceivedEventHandler(object listener, Frwk.MessageReceivedEventArgs args)
