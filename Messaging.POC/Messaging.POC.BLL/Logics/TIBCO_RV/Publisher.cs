@@ -19,7 +19,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
     {
         private Frwk.Transport _transport;
         private Channel _channel;
-        private string _messagingType = MessagingType.TIBCO_RV.ToString();
+        private string _messagingType = Helper.GetMessagingType().ToString();
 
         public void Run()
         {
@@ -32,7 +32,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
                 _channel = new Channel(_transport);
                 Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;
-
+       
                 while (flag)
                 {
                     Console.WriteLine("Press 1 to test Send, 2 to test SendRequest, 3 to test SendReply, and x to exit");

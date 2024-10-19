@@ -24,7 +24,7 @@ namespace ServiceBus.Framework.Logics
 
         public string CreateNewRequest()
         {
-            string requestId = Guid.NewGuid().ToString();
+            string requestId = Helper.GetInboxName();
             _requests.Add(requestId);
 
             return requestId;

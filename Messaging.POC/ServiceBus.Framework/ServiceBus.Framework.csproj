@@ -139,7 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums.cs" />
-    <Compile Include="Helpers\SubjectHelper.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Implementations\ServiceBusTopicSender.cs" />
     <Compile Include="Implementations\ServiceBusTopicReceiver.cs" />
     <Compile Include="Implementations\ServiceBusReceiverManager.cs" />

@@ -1,6 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
-using ServiceBus.Framework.Helpers;
 using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Interfaces;
 using System;
@@ -60,7 +59,7 @@ namespace ServiceBus.Framework.Implementations
             Console.WriteLine($"\nServiceBusReceiverManager Received: {messageId} {subject} {body}");
 
             Message msg = JsonConvert.DeserializeObject<Message>(body);
-            SubjectHelper.ParseSubject(subject, out actionType, out sendSubject);
+            Helper.ParseSubject(subject, out actionType, out sendSubject);
 
 
             // complete the message. message is deleted from the queue. 

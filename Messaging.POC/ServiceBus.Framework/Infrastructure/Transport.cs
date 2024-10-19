@@ -42,5 +42,11 @@ namespace ServiceBus.Framework.Infrastructure
             Task.Run(async () => await _serviceBusSenderManager.SendReplyMessage(reply, request)).GetAwaiter().GetResult();
         }
 
+        public string CreateInbox(Message reply, Message request)
+        {
+            string inboxName = Helper.GetInboxName();
+            return inboxName;
+        }
+
     }
 }

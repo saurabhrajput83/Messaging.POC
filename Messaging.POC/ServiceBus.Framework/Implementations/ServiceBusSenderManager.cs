@@ -1,7 +1,6 @@
 ﻿using Azure.Core;
 using Azure.Messaging.ServiceBus;
 using Newtonsoft.Json;
-using ServiceBus.Framework.Helpers;
 using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Interfaces;
 using ServiceBus.Framework.Logics;
@@ -53,7 +52,7 @@ namespace ServiceBus.Framework.Implementations
 
         public async Task SendMessage(Message message)
         {
-            string subject = SubjectHelper.CreateSubject(ActionTypes.Send, message.SendSubject);
+            string subject = Helper.CreateSubject(ActionTypes.Send, message.SendSubject);
             string body = JsonConvert.SerializeObject(message);
 
             await _sender.Send(subject, body);
@@ -68,7 +67,7 @@ namespace ServiceBus.Framework.Implementations
             requestMessage.ReplySubject = replySubject;
 
 
-            string subject = SubjectHelper.CreateSubject(ActionTypes.SendRequest, requestMessage.SendSubject);
+            string subject = Helper.CreateSubject(ActionTypes.SendRequest, requestMessage.SendSubject);
             string body = JsonConvert.SerializeObject(requestMessage);
 
             await _sender.Send(subject, body);
@@ -85,7 +84,7 @@ namespace ServiceBus.Framework.Implementations
             reply.SendSubject = reply.SendSubject ?? request.ReplySubject;
             reply.ReplySubject = string.Empty;
 
-            string subject = SubjectHelper.CreateSubject(ActionTypes.SendReply, reply.SendSubject);
+            string subject = Helper.CreateSubject(ActionTypes.SendReply, reply.SendSubject);
             string body = JsonConvert.SerializeObject(reply);
 
             await _sender.Send(subject, body);
@@ -105,7 +104,7 @@ namespace ServiceBus.Framework.Implementations
 
             Message msg = JsonConvert.DeserializeObject<Message>(body);
 
-            SubjectHelper.ParseSubject(subject, out actionType, out sendSubject);
+            Helper.ParseSubject(subject, out actionType, out sendSubject);
 
 
             // complete the message. message is deleted from the queue. 

@@ -1,13 +1,26 @@
-﻿using System;
+﻿using ServiceBus.Framework.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceBus.Framework.Helpers
+namespace ServiceBus.Framework
 {
-    public static class SubjectHelper
+    public class Helper
     {
+        public static string GetInboxName()
+        {
+            string inbox = $"_INBOX.{Guid.NewGuid().ToString()}.{GetTime()}";
+            return inbox;
+        }
+
+        public static long GetTime()
+        {
+            DateTime JanFirst1970 = new DateTime(1970, 1, 1);
+            return (long)((DateTime.Now.ToUniversalTime() - JanFirst1970).TotalMilliseconds + 0.5);
+        }
+
         public static string CreateSubject(ActionTypes actionType, string sendSubject)
         {
             return actionType.ToString() + "-" + sendSubject;

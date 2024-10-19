@@ -19,8 +19,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
     {
         private Frwk.Transport _transport;
         private Channel _channel;
-
-        private string _messagingType = MessagingType.TIBCO_RV.ToString();
+        private string _messagingType = Helper.GetMessagingType().ToString();
 
         public void Run()
         {

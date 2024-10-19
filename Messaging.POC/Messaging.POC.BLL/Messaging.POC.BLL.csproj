@@ -79,6 +79,7 @@
     <Compile Include="Logics\TIBCO_RV\Channel.cs" />
     <Compile Include="DTOs\CustomMessage.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Logics\TIBCO_RV\Helper.cs" />
     <Compile Include="Services\Manager.cs" />
     <Compile Include="Logics\TIBCO_RV\Publisher.cs" />
     <Compile Include="Logics\TIBCO_RV\Receiver.cs" />
