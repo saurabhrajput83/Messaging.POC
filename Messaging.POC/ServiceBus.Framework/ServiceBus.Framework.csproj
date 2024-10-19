@@ -158,6 +158,7 @@
     <Compile Include="Infrastructure\Transport.cs" />
     <Compile Include="Interfaces\IServiceBusReceiver.cs" />
     <Compile Include="Interfaces\IServiceBusSender.cs" />
+    <Compile Include="Logics\SendRequestLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

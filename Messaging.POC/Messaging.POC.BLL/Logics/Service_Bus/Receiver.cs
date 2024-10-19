@@ -21,7 +21,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private Frwk.Transport _transport;
         private Channel _channel;
         private Frwk.Queue _queue;
-        private string _messagingType = MessagingType.Service_Bus.ToString();
+        private string _messagingType = Helper.GetMessagingType().ToString();
         private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public void Run()

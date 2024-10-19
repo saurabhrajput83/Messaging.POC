@@ -81,19 +81,14 @@ namespace ServiceBus.Framework.Implementations
                 listener.MessageReceivedEventHandler(listener, mrArgs);
             }
 
-            //MessageReceivedEventArgs mrea = new MessageReceivedEventArgs(msg, _closure);
-
-            //if (_messageReceived != null)
-            //    _messageReceived(null, mrea);
-
-            //await pmArgs.CompleteMessageAsync(args.Message);
+            await pmArgs.CompleteMessageAsync(pmArgs.Message);
         }
 
         // handle any errors when receiving messages
-        async Task ErrorHandler(ProcessErrorEventArgs args)
+        Task ErrorHandler(ProcessErrorEventArgs args)
         {
             Console.WriteLine($"\nServiceBusReceiverManager Exception: {args.Exception.ToString()}");
-            //return Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

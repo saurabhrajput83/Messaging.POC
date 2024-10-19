@@ -18,7 +18,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
     {
         private Frwk.Transport _transport;
         private Frwk.Queue _queue;
-        private double _timeout = 5000;
+        private double _timeout = 30000;
         private Dictionary<string, Frwk.Listener> _listeners;
         private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
 

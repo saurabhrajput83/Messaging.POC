@@ -4,8 +4,10 @@ using Newtonsoft.Json;
 using ServiceBus.Framework.Helpers;
 using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Interfaces;
+using ServiceBus.Framework.Logics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
@@ -17,32 +19,26 @@ namespace ServiceBus.Framework.Implementations
     {
         private IServiceBusSender _sender;
         private IServiceBusReceiver _receiver;
-        private string _namespace_connection_string = string.Empty;
-        private string _topic_or_queue_name = string.Empty;
-        private string _subscription_name = string.Empty;
-        private List<string> _sendRequests;
-        private Dictionary<string, Message> _sendRequestsResponses;
+        private SendRequestLogic _sendRequestLogic;
+
 
 
         public ServiceBusSenderManager(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            _namespace_connection_string = namespace_connection_string;
-            _topic_or_queue_name = topic_or_queue_name;
-            _subscription_name = subscription_name;
-
             if (serviceBusType == ServiceBusType.Topic)
             {
-                _sender = new ServiceBusTopicSender(_namespace_connection_string, _topic_or_queue_name, subscription_name);
-                _receiver = new ServiceBusTopicReceiver(_namespace_connection_string, _topic_or_queue_name, subscription_name);
+                _sender = new ServiceBusTopicSender(namespace_connection_string, topic_or_queue_name, subscription_name);
+                _receiver = new ServiceBusTopicReceiver(namespace_connection_string, topic_or_queue_name, subscription_name);
             }
             else if (serviceBusType == ServiceBusType.Queue)
             {
-                _sender = new ServiceBusQueueSender(_namespace_connection_string, _topic_or_queue_name);
-                _receiver = new ServiceBusQueueReceiver(_namespace_connection_string, _topic_or_queue_name);
+                _sender = new ServiceBusQueueSender(namespace_connection_string, topic_or_queue_name);
+                _receiver = new ServiceBusQueueReceiver(namespace_connection_string, topic_or_queue_name);
             }
 
-            _sendRequests = new List<string>();
-            _sendRequestsResponses = new Dictionary<string, Message>();
+            _sendRequestLogic = new SendRequestLogic();
+
+
 
         }
 
@@ -67,31 +63,18 @@ namespace ServiceBus.Framework.Implementations
         public async Task<Message> SendRequestMessage(Message requestMessage, double timeout)
         {
 
-            string replySubject = Guid.NewGuid().ToString();
+            string replySubject = _sendRequestLogic.CreateNewRequest();
 
             requestMessage.SendSubject = requestMessage.SendSubject ?? "";
             requestMessage.ReplySubject = replySubject;
 
-            _sendRequests.Add(replySubject);
 
+            string subject = SubjectHelper.CreateSubject(ActionTypes.SendRequest, requestMessage.SendSubject);
+            string body = JsonConvert.SerializeObject(requestMessage);
 
-            await SendMessage(requestMessage);
+            await _sender.Send(subject, body);
 
-            Message responseMessage = null;
-            DateTime maxTime = DateTime.Now.AddMilliseconds(timeout);
-            DateTime currentTime = DateTime.Now;
-
-            //maxTime.
-
-            //while (currentTime.Millisecond < maxTime.Millisecond)
-            //{
-            //    if (_messages.ContainsKey(subject))
-            //    {
-            //        responseMessage = _messages[subject];
-            //        break;
-            //    }
-            //    currentTime = DateTime.Now;
-            //}
+            Message responseMessage = await _sendRequestLogic.GetResponse(replySubject, timeout);
 
             return responseMessage;
 
@@ -103,7 +86,10 @@ namespace ServiceBus.Framework.Implementations
             reply.SendSubject = reply.SendSubject ?? request.ReplySubject;
             reply.ReplySubject = string.Empty;
 
-            await SendMessage(reply);
+            string subject = SubjectHelper.CreateSubject(ActionTypes.SendReply, reply.SendSubject);
+            string body = JsonConvert.SerializeObject(reply);
+
+            await _sender.Send(subject, body);
         }
 
         // handle received messages
@@ -130,22 +116,19 @@ namespace ServiceBus.Framework.Implementations
             switch (actionType)
             {
                 case ActionTypes.SendReply:
-                    if (_sendRequests.Contains(sendSubject))
-                    {
-                        _sendRequestsResponses.Add(sendSubject, msg);
-                    }
+                    this._sendRequestLogic.AddResponseMessages(sendSubject, msg);
                     break;
             }
 
-
+            await pmArgs.CompleteMessageAsync(pmArgs.Message);
 
         }
 
         // handle any errors when receiving messages
-        async Task ErrorHandler(ProcessErrorEventArgs args)
+        Task ErrorHandler(ProcessErrorEventArgs args)
         {
             Console.WriteLine($"\nServiceBusSenderManager Exception: {args.Exception.ToString()}");
-            //return Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

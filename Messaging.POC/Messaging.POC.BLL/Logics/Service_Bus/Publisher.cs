@@ -20,7 +20,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
     {
         private Frwk.Transport _transport;
         private Channel _channel;
-        private string _messagingType = MessagingType.Service_Bus.ToString();
+        private string _messagingType = Helper.GetMessagingType().ToString();
         private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public void Run()
@@ -32,6 +32,9 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
                 _transport = new Frwk.NetTransport(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
+
+                _transport.StartListening();
+
                 Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;
 
@@ -61,6 +64,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                     }
 
                 }
+
+               
 
                 Frwk.Environment.Close();
 
