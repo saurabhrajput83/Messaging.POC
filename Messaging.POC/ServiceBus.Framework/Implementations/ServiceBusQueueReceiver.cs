@@ -10,8 +10,8 @@ namespace ServiceBus.Framework.Implementations
     public class ServiceBusQueueReceiver : IServiceBusReceiver, IAsyncDisposable
     {
 
-        ServiceBusClient _client;
-        ServiceBusProcessor _processor;
+        private ServiceBusClient _client;
+        private ServiceBusProcessor _processor;
         private string _namespace_connection_string = string.Empty;
         private string _queue_name = string.Empty;
 

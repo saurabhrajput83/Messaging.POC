@@ -11,8 +11,8 @@ namespace ServiceBus.Framework.Implementations
     public class ServiceBusQueueSender : IServiceBusSender, IAsyncDisposable
     {
 
-        ServiceBusClient _client;
-        ServiceBusSender _sender;
+        private ServiceBusClient _client;
+        private ServiceBusSender _sender;
         private string _namespace_connection_string = string.Empty;
         private string _queue_name = string.Empty;
 
