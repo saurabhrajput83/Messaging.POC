@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Messaging.POC.BLL.Interfaces
+namespace Messaging.POC.BLL.Logics.Interfaces
 {
     public interface IChannel
     {

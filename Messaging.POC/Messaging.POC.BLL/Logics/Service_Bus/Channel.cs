@@ -1,5 +1,5 @@
 ﻿using Messaging.POC.BLL.DTOs;
-using Messaging.POC.BLL.Interfaces;
+using Messaging.POC.BLL.Logics.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Frwk = ServiceBus.Framework.Infrastructure;
 
-namespace Messaging.POC.BLL.Implementations.Service_Bus
+namespace Messaging.POC.BLL.Logics.Service_Bus
 {
     public class Channel : IChannel
     {

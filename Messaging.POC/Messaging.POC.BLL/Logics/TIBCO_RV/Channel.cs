@@ -1,5 +1,5 @@
 ﻿using Messaging.POC.BLL.DTOs;
-using Messaging.POC.BLL.Interfaces;
+using Messaging.POC.BLL.Logics.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Frwk = TIBCO.Rendezvous;
 
-namespace Messaging.POC.BLL.Implementations.TIBCO_RV
+namespace Messaging.POC.BLL.Logics.TIBCO_RV
 {
     public class Channel : IChannel
     {

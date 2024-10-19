@@ -1,6 +1,6 @@
 ﻿using Messaging.POC.BLL;
 using Messaging.POC.BLL.DTOs;
-using Messaging.POC.BLL.Interfaces;
+using Messaging.POC.BLL.Logics.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -11,21 +11,20 @@ using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
-using Frwk = TIBCO.Rendezvous;
+using Frwk = ServiceBus.Framework.Infrastructure;
 
-namespace Messaging.POC.BLL.Implementations.TIBCO_RV
+namespace Messaging.POC.BLL.Logics.Service_Bus
 {
     public class Publisher : IPublisher
     {
         private string _sendMessageSubject = ConfigurationManager.AppSettings["sendMessageSubject"];
         private string _sendRequestMessageSubject = ConfigurationManager.AppSettings["sendRequestMessageSubject"];
         private string _sendReplyMessageSubject = ConfigurationManager.AppSettings["sendReplyMessageSubject"];
-        private string _service = ConfigurationManager.AppSettings["service"];
-        private string _network = ConfigurationManager.AppSettings["network"];
-        private string _daemon = ConfigurationManager.AppSettings["daemon"];
+        private string _namespace_connection_string = ConfigurationManager.AppSettings["namespace_connection_string"];
+        private string _queue_name = ConfigurationManager.AppSettings["queue_name"];
         private Frwk.Transport _transport;
         private Channel _channel;
-        private string _messagingType = MessagingType.TIBCO_RV.ToString();
+        private string _messagingType = MessagingType.Service_Bus.ToString();
 
         public void Run()
         {
@@ -34,7 +33,7 @@ namespace Messaging.POC.BLL.Implementations.TIBCO_RV
                 Frwk.Environment.Open();
 
 
-                _transport = new Frwk.NetTransport(_service, _network, _daemon);
+                _transport = new Frwk.NetTransport(_namespace_connection_string, _queue_name);
                 _channel = new Channel(_transport);
                 Console.WriteLine($"\n{_messagingType} Publisher started running..");
                 bool flag = true;

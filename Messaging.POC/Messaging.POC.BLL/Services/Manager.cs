@@ -1,12 +1,13 @@
 ﻿using Messaging.POC.BLL;
-using Messaging.POC.BLL.Interfaces;
+using Messaging.POC.BLL.Logics.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Logics = Messaging.POC.BLL.Logics;
 
-namespace Messaging.POC.BLL.Implementations
+namespace Messaging.POC.BLL.Services
 {
     public class Manager : IManager
     {
@@ -14,9 +15,9 @@ namespace Messaging.POC.BLL.Implementations
         {
             IPublisher publisher = null;
             if (messagingType == MessagingType.TIBCO_RV)
-                publisher = new TIBCO_RV.Publisher();
+                publisher = new Logics.TIBCO_RV.Publisher();
             else if (messagingType == MessagingType.Service_Bus)
-                publisher = new Service_Bus.Publisher();
+                publisher = new Logics.Service_Bus.Publisher();
 
             return publisher;
         }
@@ -25,9 +26,9 @@ namespace Messaging.POC.BLL.Implementations
         {
             IReceiver receiver = null;
             if (messagingType == MessagingType.TIBCO_RV)
-                receiver = new TIBCO_RV.Receiver();
+                receiver = new Logics.TIBCO_RV.Receiver();
             else if (messagingType == MessagingType.Service_Bus)
-                receiver = new Service_Bus.Receiver();
+                receiver = new Logics.Service_Bus.Receiver();
 
             return receiver;
         }
