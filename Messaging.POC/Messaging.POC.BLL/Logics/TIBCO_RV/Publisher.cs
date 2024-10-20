@@ -22,6 +22,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         private MessagingTypes _messagingType = Helper.GetMessagingType();
         private AppTypes _appType = AppTypes.Publisher;
 
+        public void Preprocessing()
+        {
+        }
+
         public void Run()
         {
             try
@@ -33,6 +37,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
                 _channel = new Channel(_transport);
                 ConsoleHelper.StartApp(_messagingType, _appType);
                 bool flag = true;
+
+                Preprocessing();
 
                 while (flag)
                 {
@@ -60,6 +66,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
                 }
 
+                Postprocessing();
+
                 Frwk.Environment.Close();
 
             }
@@ -67,6 +75,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
             {
                 throw;
             }
+        }
+
+        public void Postprocessing()
+        {
         }
 
         private void SendMessage()

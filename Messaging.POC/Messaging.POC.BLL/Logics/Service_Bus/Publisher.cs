@@ -24,6 +24,11 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private AppTypes _appType = AppTypes.Publisher;
         private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
+        public void Preprocessing()
+        {
+            _transport.StartListening();
+        }
+
         public void Run()
         {
             try
@@ -35,6 +40,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 _channel = new Channel(_transport);
                 ConsoleHelper.StartApp(_messagingType, _appType);
                 bool flag = true;
+
+                Preprocessing();
 
                 while (flag)
                 {
@@ -62,6 +69,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
                 }
 
+                Postprocessing();
+
                 Frwk.Environment.Close();
 
             }
@@ -69,6 +78,10 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
             {
                 throw;
             }
+        }
+
+        public void Postprocessing()
+        {
         }
 
         private void SendMessage()

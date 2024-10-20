@@ -17,14 +17,17 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
     {
         private Frwk.Transport _transport;
         private Frwk.Queue _queue;
-        private double _timeout = 5000;
+        private double _timeout = 30000;
         private Dictionary<string, Frwk.Listener> _listeners;
+        private ServiceBusReceiverManager _serviceBusReceiverManager;
+        private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public Channel(Frwk.Transport transport)
         {
             _transport = transport;
             _queue = Frwk.Queue.Default;
             _listeners = new Dictionary<string, Frwk.Listener>();
+            _serviceBusReceiverManager = new ServiceBusReceiverManager(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
         }
 
         public void SendMessage(CustomMessage customMsg)
@@ -78,8 +81,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 ConsoleHelper.DisplayListenerStarted(listener.Key);
             }
 
-            var dispacher = new Frwk.Dispatcher(_queue);
-            dispacher.Join();
+            Task.Run(async () => await _serviceBusReceiverManager.StartListening(_listeners)).GetAwaiter().GetResult();
         }
 
         protected void OnMessageReceivedEventHandler(object listener, Frwk.MessageReceivedEventArgs args)
@@ -128,10 +130,10 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 customMsg.SendSubject = msg.SendSubject;
                 customMsg.ReplySubject = msg.ReplySubject;
 
-                customMsg.Name = (string)msg.GetField("Name").Value;
-                customMsg.Age = (int)msg.GetField("Age").Value;
-                customMsg.Department = (string)msg.GetField("Department").Value;
-                customMsg.Address = (string)msg.GetField("Address").Value;
+                customMsg.Name = Convert.ToString(msg.GetField("Name").Value);
+                customMsg.Age = Convert.ToInt32(msg.GetField("Age").Value);
+                customMsg.Department = Convert.ToString(msg.GetField("Department").Value);
+                customMsg.Address = Convert.ToString(msg.GetField("Address").Value);
             }
 
             return customMsg;
