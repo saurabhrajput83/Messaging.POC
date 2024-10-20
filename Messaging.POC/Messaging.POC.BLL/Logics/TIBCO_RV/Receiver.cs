@@ -22,6 +22,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         private MessagingTypes _messagingType = Helper.GetMessagingType();
         private AppTypes _appType = AppTypes.Receiver;
 
+        public void Preprocessing()
+        {
+        }
+
         public void Run()
         {
             try
@@ -30,6 +34,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
                 _transport = new Frwk.NetTransport(Configs.SERVICE, Configs.NETWORK, Configs.DAEMON);
                 _channel = new Channel(_transport);
+
+                Preprocessing();
 
                 ConsoleHelper.StartApp(_messagingType, _appType);
 
@@ -41,6 +47,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
                 _channel.Dispatch();
 
+                Postprocessing();
+
                 Frwk.Environment.Close();
 
                 ConsoleHelper.ExitApp();
@@ -50,6 +58,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
             {
                 throw;
             }
+        }
+
+        public void Postprocessing()
+        {
         }
 
         private void SendListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)

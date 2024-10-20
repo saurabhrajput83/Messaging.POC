@@ -17,22 +17,21 @@ namespace Messaging.POC.Receiver
             bool flag = true;
             IManager manager = new Manager();
 
-            Console.WriteLine("\nReceiver app started..");
+            ConsoleHelper.StartApp(AppTypes.Receiver);
 
             while (flag)
             {
-                Console.WriteLine("Press a to test TIBCO RV, b to test Service Bus, and x to exit..");
-                var line = Console.ReadLine().ToUpper();
+                ConsoleHelper.DisplayMessagingTypes();
 
+                var line = Console.ReadLine().ToUpper();
 
                 switch (line)
                 {
-
                     case "A":
-                        manager.GetReceiver(MessagingType.TIBCO_RV).Run();
+                        manager.GetReceiver(MessagingTypes.TIBCO_RV).Run();
                         break;
                     case "B":
-                        manager.GetReceiver(MessagingType.Service_Bus).Run();
+                        manager.GetReceiver(MessagingTypes.Service_Bus).Run();
                         break;
                     case "X":
                         flag = false;

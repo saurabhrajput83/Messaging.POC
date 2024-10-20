@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Channels;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Frwk = ServiceBus.Framework.Infrastructure;
 
@@ -24,6 +25,10 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private AppTypes _appType = AppTypes.Receiver;
         private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
+        public void Preprocessing()
+        {
+        }
+
         public void Run()
         {
             try
@@ -32,6 +37,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
                 _transport = new Frwk.NetTransport(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
+
+                Preprocessing();
 
                 ConsoleHelper.StartApp(_messagingType, _appType);
 
@@ -43,6 +50,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
                 _channel.Dispatch();
 
+                Postprocessing();
+
                 Frwk.Environment.Close();
 
                 ConsoleHelper.ExitApp();
@@ -52,6 +61,18 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
             {
                 throw;
             }
+        }
+
+        public void Postprocessing()
+        {
+            Thread.Sleep(Timeout.Infinite);
+
+            //object timelock = new object();
+
+            //lock (timelock)
+            //{
+            //    Monitor.Wait(timelock, TimeSpan.FromMilliseconds(1000000));
+            //}
         }
 
         private void SendListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
