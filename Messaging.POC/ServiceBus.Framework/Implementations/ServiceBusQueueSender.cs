@@ -26,15 +26,16 @@ namespace ServiceBus.Framework.Implementations
         }
 
 
-        public async Task Send(string subject, string body)
+        public async Task Send(ServiceBusActionTypes serviceBusActionType, string subject, string body)
         {
             ServiceBusMessageBatch messageBatch = await _sender.CreateMessageBatchAsync();
-
+            string actionType = serviceBusActionType.ToString();
 
             // try adding a message to the batch
 
             ServiceBusMessage sbm = new ServiceBusMessage(body);
             sbm.Subject = subject;
+            sbm.ApplicationProperties["ActionType"] = actionType;
 
             if (!messageBatch.TryAddMessage(sbm))
             {

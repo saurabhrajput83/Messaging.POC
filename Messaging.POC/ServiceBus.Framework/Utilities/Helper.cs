@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServiceBus.Framework
+namespace ServiceBus.Framework.Utilities
 {
     public class Helper
     {

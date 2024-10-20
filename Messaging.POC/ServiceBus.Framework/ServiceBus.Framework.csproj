@@ -138,8 +138,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\ConsoleHelper.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Helper.cs" />
+    <Compile Include="Utilities\Helper.cs" />
     <Compile Include="Implementations\ServiceBusTopicSender.cs" />
     <Compile Include="Implementations\ServiceBusTopicReceiver.cs" />
     <Compile Include="Implementations\ServiceBusReceiverManager.cs" />

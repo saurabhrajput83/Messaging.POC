@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Interfaces;
+using ServiceBus.Framework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace ServiceBus.Framework.Implementations
         private IServiceBusSender _sender;
         private IServiceBusReceiver _receiver;
         private Dictionary<string, Listener> _listeners;
+        private string _appType = ServiceBusAppTypes.Receiver.ToString();
 
         public ServiceBusReceiverManager(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
@@ -48,22 +50,23 @@ namespace ServiceBus.Framework.Implementations
         // handle received messages
         async Task MessageHandler(ProcessMessageEventArgs pmArgs)
         {
-            ServiceBusActionTypes actionType;
-            string sendSubject;
             string messageId = pmArgs.Message.MessageId;
             string subject = pmArgs.Message.Subject.ToString();
             string body = pmArgs.Message.Body.ToString();
+
+            string sendSubject = subject;
+            string actionType = string.Empty;
+            if (pmArgs.Message.ApplicationProperties["ActionType"] != null)
+                actionType = pmArgs.Message.ApplicationProperties["ActionType"].ToString();
+
+
             Dictionary<string, Listener> listeners = this._listeners;
 
 
-            Console.WriteLine($"\nServiceBusReceiverManager Received: {messageId} {subject} {body}");
-
-            Message msg = JsonConvert.DeserializeObject<Message>(body);
-            Helper.ParseSubject(subject, out actionType, out sendSubject);
-
-
+            ConsoleHelper.StartProcessMessageHandler(_appType, actionType, subject, body);
             // complete the message. message is deleted from the queue. 
 
+            Message msg = JsonConvert.DeserializeObject<Message>(body);
 
             if (listeners.ContainsKey(sendSubject))
             {
@@ -73,13 +76,14 @@ namespace ServiceBus.Framework.Implementations
                 listener.MessageReceivedEventHandler(listener, mrArgs);
             }
 
+            ConsoleHelper.CompleteProcessMessageHandler(_appType);
             await pmArgs.CompleteMessageAsync(pmArgs.Message);
         }
 
         // handle any errors when receiving messages
         Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            Console.WriteLine($"\nServiceBusReceiverManager Exception: {args.Exception.ToString()}");
+            ConsoleHelper.ProcessErrorHandler(_appType, args.Exception);
             return Task.CompletedTask;
         }
     }

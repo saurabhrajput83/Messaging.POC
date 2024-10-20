@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Interfaces;
 using ServiceBus.Framework.Logics;
+using ServiceBus.Framework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +20,7 @@ namespace ServiceBus.Framework.Implementations
         private IServiceBusSender _sender;
         private IServiceBusReceiver _receiver;
         private SendRequestLogic _sendRequestLogic;
+        private string _appType = ServiceBusAppTypes.Publisher.ToString();
 
 
         public ServiceBusSenderManager(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
@@ -36,8 +38,6 @@ namespace ServiceBus.Framework.Implementations
 
             _sendRequestLogic = new SendRequestLogic();
 
-
-
         }
 
         public async Task StartListening()
@@ -52,25 +52,24 @@ namespace ServiceBus.Framework.Implementations
 
         public async Task SendMessage(Message message)
         {
-            string subject = Helper.CreateSubject(ServiceBusActionTypes.Send, message.SendSubject);
+            ServiceBusActionTypes serviceBusActionType = ServiceBusActionTypes.Send;
+            string subject = message.SendSubject;
             string body = JsonConvert.SerializeObject(message);
 
-            await _sender.Send(subject, body);
+            await _sender.Send(serviceBusActionType, subject, body);
         }
 
         public async Task<Message> SendRequestMessage(Message requestMessage, double timeout)
         {
-
+            ServiceBusActionTypes serviceBusActionType = ServiceBusActionTypes.SendRequest;
+            string subject = requestMessage.SendSubject;
             string replySubject = _sendRequestLogic.CreateNewRequest();
 
-            requestMessage.SendSubject = requestMessage.SendSubject ?? "";
             requestMessage.ReplySubject = replySubject;
 
-
-            string subject = Helper.CreateSubject(ServiceBusActionTypes.SendRequest, requestMessage.SendSubject);
             string body = JsonConvert.SerializeObject(requestMessage);
 
-            await _sender.Send(subject, body);
+            await _sender.Send(serviceBusActionType, subject, body);
 
             Message responseMessage = await _sendRequestLogic.GetResponse(replySubject, timeout);
 
@@ -80,35 +79,37 @@ namespace ServiceBus.Framework.Implementations
 
         public async Task SendReplyMessage(Message reply, Message request)
         {
+            ServiceBusActionTypes serviceBusActionType = ServiceBusActionTypes.SendReply;
+            string subject = request.ReplySubject;
 
-            reply.SendSubject = reply.SendSubject ?? request.ReplySubject;
+            reply.SendSubject = subject;
             reply.ReplySubject = string.Empty;
 
-            string subject = Helper.CreateSubject(ServiceBusActionTypes.SendReply, reply.SendSubject);
             string body = JsonConvert.SerializeObject(reply);
 
-            await _sender.Send(subject, body);
+            await _sender.Send(serviceBusActionType, subject, body);
         }
 
         // handle received messages
         async Task MessageHandler(ProcessMessageEventArgs pmArgs)
         {
-            ServiceBusActionTypes actionType;
-            string sendSubject;
             string messageId = pmArgs.Message.MessageId;
             string subject = pmArgs.Message.Subject.ToString();
             string body = pmArgs.Message.Body.ToString();
 
+            string sendSubject = subject;
+            string actionTypeStr = string.Empty;
+            if (pmArgs.Message.ApplicationProperties["ActionType"] != null)
+                actionTypeStr = pmArgs.Message.ApplicationProperties["ActionType"].ToString();
 
-            Console.WriteLine($"\nServiceBusSenderManager Received: {messageId} {subject} {body}");
+
+            ConsoleHelper.StartProcessMessageHandler(_appType, actionTypeStr, subject, body);
 
             Message msg = JsonConvert.DeserializeObject<Message>(body);
 
-            Helper.ParseSubject(subject, out actionType, out sendSubject);
-
-
             // complete the message. message is deleted from the queue. 
-
+            ServiceBusActionTypes actionType;
+            Enum.TryParse<ServiceBusActionTypes>(actionTypeStr, out actionType);
 
             switch (actionType)
             {
@@ -117,6 +118,7 @@ namespace ServiceBus.Framework.Implementations
                     break;
             }
 
+            ConsoleHelper.CompleteProcessMessageHandler(_appType);
             await pmArgs.CompleteMessageAsync(pmArgs.Message);
 
         }
@@ -124,7 +126,7 @@ namespace ServiceBus.Framework.Implementations
         // handle any errors when receiving messages
         Task ErrorHandler(ProcessErrorEventArgs args)
         {
-            Console.WriteLine($"\nServiceBusSenderManager Exception: {args.Exception.ToString()}");
+            ConsoleHelper.ProcessErrorHandler(_appType, args.Exception);
             return Task.CompletedTask;
         }
     }

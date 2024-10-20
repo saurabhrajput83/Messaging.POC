@@ -21,4 +21,12 @@ namespace ServiceBus.Framework
         [Description("Queue")]
         Queue = 1
     }
+
+    public enum ServiceBusAppTypes
+    {
+        [Description("Publisher")]
+        Publisher = 0,
+        [Description("Receiver")]
+        Receiver = 1
+    }
 }
