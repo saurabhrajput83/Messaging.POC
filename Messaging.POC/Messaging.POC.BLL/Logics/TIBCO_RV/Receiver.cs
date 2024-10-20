@@ -19,7 +19,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
     {
         private Frwk.Transport _transport;
         private Channel _channel;
-        private string _messagingType = Helper.GetMessagingType().ToString();
+        private MessagingTypes _messagingType = Helper.GetMessagingType();
+        private AppTypes _appType = AppTypes.Receiver;
 
         public void Run()
         {
@@ -30,19 +31,19 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
                 _transport = new Frwk.NetTransport(Configs.SERVICE, Configs.NETWORK, Configs.DAEMON);
                 _channel = new Channel(_transport);
 
+                ConsoleHelper.StartApp(_messagingType, _appType);
+
                 _channel.Subscribe(Configs.SENDMESSAGESUBJECT, SendListener_MessageReceived);
 
                 _channel.Subscribe(Configs.SENDREQUESTMESSAGESUBJECT, SendRequestListener_MessageReceived);
 
                 _channel.Subscribe(Configs.SENDREPLYMESSAGESUBJECT, SendReplyListener_MessageReceived);
 
-                Console.WriteLine($"\n{_messagingType} Receiver started running..");
-
                 _channel.Dispatch();
 
                 Frwk.Environment.Close();
-                Console.WriteLine("Exiting..");
-                Console.ReadLine();
+
+                ConsoleHelper.ExitApp();
 
             }
             catch (Exception)
@@ -53,58 +54,73 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         private void SendListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
+            ListenerTypes listenerType = ListenerTypes.SendListener;
 
-            CustomMessage customMsg = args.Message;
+            ConsoleHelper.StartListener(_messagingType, listenerType);
 
+            CustomMessage requestMsg = args.Message;
 
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
+            ConsoleHelper.DisplayListenerCustomRequestMessage(requestMsg);
 
-
-            Console.WriteLine($"\n{_messagingType} SendListener_Message Received..");
-            Console.WriteLine($"CustomMessage: {customMsgStr}");
-
-            if (!string.IsNullOrEmpty(customMsg.ReplySubject))
+            if (!string.IsNullOrEmpty(requestMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 1", 45, "Exec 1", "Marathalli 1");
-                _channel.SendReplyMessage(replyCustomMessage, customMsg);
+                SendReply(requestMsg, 1);
             }
+
+            ConsoleHelper.CompleteListener(_messagingType, listenerType);
 
         }
 
         private void SendRequestListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
 
-            CustomMessage customMsg = args.Message;
+            ListenerTypes listenerType = ListenerTypes.SendRequestListener;
 
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
+            ConsoleHelper.StartListener(_messagingType, listenerType);
 
-            Console.WriteLine($"\n{_messagingType} SendRequestListener_Message Received..");
-            Console.WriteLine($"CustomMessage: {customMsgStr}");
+            CustomMessage requestMsg = args.Message;
 
+            ConsoleHelper.DisplayListenerCustomRequestMessage(requestMsg);
 
-            if (!string.IsNullOrEmpty(customMsg.ReplySubject))
+            if (!string.IsNullOrEmpty(requestMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 2", 46, "Exec 2", "Marathalli 2");
-                _channel.SendReplyMessage(replyCustomMessage, customMsg);
+                SendReply(requestMsg, 2);
+
             }
+
+            ConsoleHelper.CompleteListener(_messagingType, listenerType);
         }
 
         private void SendReplyListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
-            CustomMessage customMsg = args.Message;
+            ListenerTypes listenerType = ListenerTypes.SendReplyListener;
 
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
+            ConsoleHelper.StartListener(_messagingType, listenerType);
 
+            CustomMessage requestMsg = args.Message;
 
-            Console.WriteLine($"\n{_messagingType} SendReplyListener_Message Received..");
-            Console.WriteLine($"CustomMessage: {customMsgStr}");
+            ConsoleHelper.DisplayListenerCustomRequestMessage(requestMsg);
 
-            if (!string.IsNullOrEmpty(customMsg.ReplySubject))
+            if (!string.IsNullOrEmpty(requestMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 3", 47, "Exec 3", "Marathalli 3");
-                _channel.SendReplyMessage(replyCustomMessage, customMsg);
+                SendReply(requestMsg, 3);
             }
 
+        }
+
+        private void SendReply(CustomMessage requestMsg, int counter)
+        {
+            ActionTypes actionType = ActionTypes.SendReply;
+
+            ConsoleHelper.StartAction(_messagingType, actionType);
+
+            CustomMessage replyMsg = CustomMessageHelper.GetCustomMessage("Sajid", 45, "Exec", "Marathalli", counter);
+
+            ConsoleHelper.DisplayCustomRequestMessage(replyMsg);
+
+            _channel.SendReplyMessage(replyMsg, requestMsg);
+
+            ConsoleHelper.CompleteAction(_messagingType, actionType);
         }
 
 

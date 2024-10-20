@@ -16,25 +16,25 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         private Frwk.Transport _transport;
         private Frwk.Queue _queue;
         private double _timeout = 5000;
-        private Dictionary<string, Frwk.Listener> _listener;
+        private Dictionary<string, Frwk.Listener> _listeners;
 
         public Channel(Frwk.Transport transport)
         {
             _transport = transport;
             _queue = Frwk.Queue.Default;
-            _listener = new Dictionary<string, Frwk.Listener>();
+            _listeners = new Dictionary<string, Frwk.Listener>();
         }
 
         public void SendMessage(CustomMessage customMsg)
         {
-            Frwk.Message msg = ConvertToTibcoMessage(customMsg);
+            Frwk.Message msg = ConvertToFrwkMessage(customMsg);
 
             _transport.Send(msg);
         }
 
         public CustomMessage SendRequestMessage(CustomMessage customMsg)
         {
-            Frwk.Message msg = ConvertToTibcoMessage(customMsg);
+            Frwk.Message msg = ConvertToFrwkMessage(customMsg);
 
             Frwk.Message replyMsg = _transport.SendRequest(msg, _timeout);
 
@@ -43,8 +43,8 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         public void SendReplyMessage(CustomMessage customReplyMsg, CustomMessage customMsg)
         {
-            Frwk.Message replyMsg = ConvertToTibcoMessage(customReplyMsg);
-            Frwk.Message msg = ConvertToTibcoMessage(customMsg);
+            Frwk.Message replyMsg = ConvertToFrwkMessage(customReplyMsg);
+            Frwk.Message msg = ConvertToFrwkMessage(customMsg);
 
 
             _transport.SendReply(replyMsg, msg);
@@ -53,7 +53,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         public bool Subscribe(string subject, CustomMessageReceivedEventHandler messageHandler)
         {
-            if (_listener.ContainsKey(subject))
+            if (_listeners.ContainsKey(subject))
                 return false;
 
             Frwk.Listener listener = new Frwk.Listener(
@@ -65,12 +65,17 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
                    );
 
 
-            _listener.Add(subject, listener);
+            _listeners.Add(subject, listener);
             return true;
         }
 
         public void Dispatch()
         {
+            foreach (KeyValuePair<string, Frwk.Listener> listener in _listeners)
+            {
+                ConsoleHelper.DisplayListenerStarted(listener.Key);
+            }
+
             var dispacher = new Frwk.Dispatcher(_queue);
             dispacher.Join();
         }
@@ -81,13 +86,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
             Frwk.Message msg = args.Message;
             CustomMessage customMsg = ConvertToCustomMessage(msg);
 
-            string msgStr = JsonConvert.SerializeObject(msg);
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
-
-
-            Console.WriteLine($"\nOnMessageReceivedEventHandler Received..");
-            Console.WriteLine($"Message: {msgStr}");
-            Console.WriteLine($"CustomMessage: {customMsgStr}");
+            Helper.FrwkOnMessageReceivedEventHandlerStarted(msg, customMsg);
 
             CustomMessageReceivedEventHandler handler = (CustomMessageReceivedEventHandler)args.Closure;
 
@@ -99,7 +98,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         }
 
-        private Frwk.Message ConvertToTibcoMessage(CustomMessage customMsg)
+        private Frwk.Message ConvertToFrwkMessage(CustomMessage customMsg)
         {
             Frwk.Message msg = new Frwk.Message();
 

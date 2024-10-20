@@ -9,14 +9,14 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 {
     public class Helper
     {
-        public static MessagingType GetMessagingType()
+        public static MessagingTypes GetMessagingType()
         {
-            return MessagingType.Service_Bus;
+            return MessagingTypes.Service_Bus;
         }
 
-        public static ServiceBusType GetDefaultServiceBusType()
+        public static ServiceBusTypes GetDefaultServiceBusType()
         {
-            return ServiceBusType.Topic;
+            return ServiceBusTypes.Topic;
         }
     }
 }

@@ -13,14 +13,13 @@ using Frwk = ServiceBus.Framework.Infrastructure;
 namespace Messaging.POC.BLL.Logics.Service_Bus
 {
 
-
     public class Channel : IChannel
     {
         private Frwk.Transport _transport;
         private Frwk.Queue _queue;
         private double _timeout = 30000;
         private Dictionary<string, Frwk.Listener> _listeners;
-        private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
+        private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public Channel(Frwk.Transport transport)
         {
@@ -77,6 +76,9 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         {
             ServiceBusReceiverManager _serviceBusReceiverManager = new ServiceBusReceiverManager(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
             Task.Run(async () => await _serviceBusReceiverManager.StartListening(_listeners)).GetAwaiter().GetResult();
+
+
+
         }
 
         protected void OnMessageReceivedEventHandler(object listener, Frwk.MessageReceivedEventArgs args)

@@ -9,8 +9,8 @@ namespace Messaging.POC.BLL.Services.Interfaces
 {
     public interface IManager
     {
-        IPublisher GetPublisher(MessagingType messagingType);
-        IReceiver GetReceiver(MessagingType messagingType);
+        IPublisher GetPublisher(MessagingTypes messagingType);
+        IReceiver GetReceiver(MessagingTypes messagingType);
 
     }
 }

@@ -12,23 +12,23 @@ namespace Messaging.POC.BLL.Services
 {
     public class Manager : IManager
     {
-        public IPublisher GetPublisher(MessagingType messagingType)
+        public IPublisher GetPublisher(MessagingTypes messagingType)
         {
             IPublisher publisher = null;
-            if (messagingType == MessagingType.TIBCO_RV)
+            if (messagingType == MessagingTypes.TIBCO_RV)
                 publisher = new Logics.TIBCO_RV.Publisher();
-            else if (messagingType == MessagingType.Service_Bus)
+            else if (messagingType == MessagingTypes.Service_Bus)
                 publisher = new Logics.Service_Bus.Publisher();
 
             return publisher;
         }
 
-        public IReceiver GetReceiver(MessagingType messagingType)
+        public IReceiver GetReceiver(MessagingTypes messagingType)
         {
             IReceiver receiver = null;
-            if (messagingType == MessagingType.TIBCO_RV)
+            if (messagingType == MessagingTypes.TIBCO_RV)
                 receiver = new Logics.TIBCO_RV.Receiver();
-            else if (messagingType == MessagingType.Service_Bus)
+            else if (messagingType == MessagingTypes.Service_Bus)
                 receiver = new Logics.Service_Bus.Receiver();
 
             return receiver;

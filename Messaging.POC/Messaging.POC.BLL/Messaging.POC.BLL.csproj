@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configs.cs" />
+    <Compile Include="ConsoleHelper.cs" />
     <Compile Include="Logics\CustomMessageHelper.cs" />
     <Compile Include="Logics\CustomMessageReceivedEventArgs.cs" />
     <Compile Include="Logics\CustomMessageReceivedEventHandler.cs" />

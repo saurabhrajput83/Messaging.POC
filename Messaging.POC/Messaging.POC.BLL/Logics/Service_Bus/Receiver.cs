@@ -22,7 +22,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private Channel _channel;
         private Frwk.Queue _queue;
         private string _messagingType = Helper.GetMessagingType().ToString();
-        private ServiceBusType _serviceBusType = Helper.GetDefaultServiceBusType();
+        private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public void Run()
         {
@@ -68,7 +68,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
             if (!string.IsNullOrEmpty(customMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 1", 45, "Exec 1", "Marathalli 1");
+                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid", 45, "Exec", "Marathalli", 1);
                 _channel.SendReplyMessage(replyCustomMessage, customMsg);
             }
 
@@ -87,7 +87,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
             if (!string.IsNullOrEmpty(customMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 2", 46, "Exec 2", "Marathalli 2");
+                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid", 46, "Exec", "Marathalli", 2);
                 _channel.SendReplyMessage(replyCustomMessage, customMsg);
             }
         }
@@ -104,7 +104,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
             if (!string.IsNullOrEmpty(customMsg.ReplySubject))
             {
-                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid 3", 47, "Exec 3", "Marathalli 3");
+                CustomMessage replyCustomMessage = CustomMessageHelper.GetCustomMessage("Sajid", 47, "Exec", "Marathalli", 3);
                 _channel.SendReplyMessage(replyCustomMessage, customMsg);
             }
 

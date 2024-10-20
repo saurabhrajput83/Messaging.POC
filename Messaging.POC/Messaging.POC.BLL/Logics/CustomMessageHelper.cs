@@ -22,14 +22,14 @@ namespace Messaging.POC.BLL.Logics
             return customMsg;
         }
 
-        public static CustomMessage GetCustomMessage(string name, int age, string department, string address)
+        public static CustomMessage GetCustomMessage(string name, int age, string department, string address, int counter)
         {
             CustomMessage customMsg = new CustomMessage();
 
-            customMsg.Name = name;
+            customMsg.Name = $"{ name} {counter}";
             customMsg.Age = age;
-            customMsg.Department = department;
-            customMsg.Address = address;
+            customMsg.Department = $"{ department} {counter}";
+            customMsg.Address = $"{ address} {counter}";
 
             return customMsg;
         }
