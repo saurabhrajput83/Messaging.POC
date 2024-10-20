@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ServiceBus.Framework
 {
-    public enum ActionTypes
+    public enum ServiceBusActionTypes
     {
         Send = 0,
         SendRequest = 1,
         SendReply
     }
 
-    public enum ServiceBusType
+    public enum ServiceBusTypes
     {
         [Description("Topic")]
         Topic = 0,

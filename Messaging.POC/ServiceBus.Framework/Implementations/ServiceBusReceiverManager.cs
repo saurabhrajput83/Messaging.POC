@@ -17,14 +17,14 @@ namespace ServiceBus.Framework.Implementations
         private IServiceBusReceiver _receiver;
         private Dictionary<string, Listener> _listeners;
 
-        public ServiceBusReceiverManager(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        public ServiceBusReceiverManager(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            if (serviceBusType == ServiceBusType.Topic)
+            if (serviceBusType == ServiceBusTypes.Topic)
             {
                 _sender = new ServiceBusTopicSender(namespace_connection_string, topic_or_queue_name, subscription_name);
                 _receiver = new ServiceBusTopicReceiver(namespace_connection_string, topic_or_queue_name, subscription_name);
             }
-            else if (serviceBusType == ServiceBusType.Queue)
+            else if (serviceBusType == ServiceBusTypes.Queue)
             {
                 _sender = new ServiceBusQueueSender(namespace_connection_string, topic_or_queue_name);
                 _receiver = new ServiceBusQueueReceiver(namespace_connection_string, topic_or_queue_name);
@@ -48,7 +48,7 @@ namespace ServiceBus.Framework.Implementations
         // handle received messages
         async Task MessageHandler(ProcessMessageEventArgs pmArgs)
         {
-            ActionTypes actionType;
+            ServiceBusActionTypes actionType;
             string sendSubject;
             string messageId = pmArgs.Message.MessageId;
             string subject = pmArgs.Message.Subject.ToString();

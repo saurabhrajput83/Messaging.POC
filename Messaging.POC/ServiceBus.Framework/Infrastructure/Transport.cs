@@ -16,7 +16,7 @@ namespace ServiceBus.Framework.Infrastructure
 
         private ServiceBusSenderManager _serviceBusSenderManager = null;
 
-        protected Transport(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        protected Transport(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
             _serviceBusSenderManager = new ServiceBusSenderManager(serviceBusType, namespace_connection_string, topic_or_queue_name, subscription_name);
 

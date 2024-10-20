@@ -21,19 +21,19 @@ namespace ServiceBus.Framework
             return (long)((DateTime.Now.ToUniversalTime() - JanFirst1970).TotalMilliseconds + 0.5);
         }
 
-        public static string CreateSubject(ActionTypes actionType, string sendSubject)
+        public static string CreateSubject(ServiceBusActionTypes actionType, string sendSubject)
         {
             return actionType.ToString() + "-" + sendSubject;
         }
 
-        public static void ParseSubject(string subject, out ActionTypes actionType, out string sendSubject)
+        public static void ParseSubject(string subject, out ServiceBusActionTypes actionType, out string sendSubject)
         {
             int idx = subject.IndexOf("-");
 
             string actionTypeStr = subject.Substring(0, idx);
             sendSubject = subject.Substring(idx + 1);
 
-            Enum.TryParse<ActionTypes>(actionTypeStr, out actionType);
+            Enum.TryParse<ServiceBusActionTypes>(actionTypeStr, out actionType);
 
         }
     }

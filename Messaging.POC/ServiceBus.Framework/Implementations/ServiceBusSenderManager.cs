@@ -21,14 +21,14 @@ namespace ServiceBus.Framework.Implementations
         private SendRequestLogic _sendRequestLogic;
 
 
-        public ServiceBusSenderManager(ServiceBusType serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        public ServiceBusSenderManager(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            if (serviceBusType == ServiceBusType.Topic)
+            if (serviceBusType == ServiceBusTypes.Topic)
             {
                 _sender = new ServiceBusTopicSender(namespace_connection_string, topic_or_queue_name, subscription_name);
                 _receiver = new ServiceBusTopicReceiver(namespace_connection_string, topic_or_queue_name, subscription_name);
             }
-            else if (serviceBusType == ServiceBusType.Queue)
+            else if (serviceBusType == ServiceBusTypes.Queue)
             {
                 _sender = new ServiceBusQueueSender(namespace_connection_string, topic_or_queue_name);
                 _receiver = new ServiceBusQueueReceiver(namespace_connection_string, topic_or_queue_name);
@@ -52,7 +52,7 @@ namespace ServiceBus.Framework.Implementations
 
         public async Task SendMessage(Message message)
         {
-            string subject = Helper.CreateSubject(ActionTypes.Send, message.SendSubject);
+            string subject = Helper.CreateSubject(ServiceBusActionTypes.Send, message.SendSubject);
             string body = JsonConvert.SerializeObject(message);
 
             await _sender.Send(subject, body);
@@ -67,7 +67,7 @@ namespace ServiceBus.Framework.Implementations
             requestMessage.ReplySubject = replySubject;
 
 
-            string subject = Helper.CreateSubject(ActionTypes.SendRequest, requestMessage.SendSubject);
+            string subject = Helper.CreateSubject(ServiceBusActionTypes.SendRequest, requestMessage.SendSubject);
             string body = JsonConvert.SerializeObject(requestMessage);
 
             await _sender.Send(subject, body);
@@ -84,7 +84,7 @@ namespace ServiceBus.Framework.Implementations
             reply.SendSubject = reply.SendSubject ?? request.ReplySubject;
             reply.ReplySubject = string.Empty;
 
-            string subject = Helper.CreateSubject(ActionTypes.SendReply, reply.SendSubject);
+            string subject = Helper.CreateSubject(ServiceBusActionTypes.SendReply, reply.SendSubject);
             string body = JsonConvert.SerializeObject(reply);
 
             await _sender.Send(subject, body);
@@ -93,7 +93,7 @@ namespace ServiceBus.Framework.Implementations
         // handle received messages
         async Task MessageHandler(ProcessMessageEventArgs pmArgs)
         {
-            ActionTypes actionType;
+            ServiceBusActionTypes actionType;
             string sendSubject;
             string messageId = pmArgs.Message.MessageId;
             string subject = pmArgs.Message.Subject.ToString();
@@ -112,7 +112,7 @@ namespace ServiceBus.Framework.Implementations
 
             switch (actionType)
             {
-                case ActionTypes.SendReply:
+                case ServiceBusActionTypes.SendReply:
                     this._sendRequestLogic.AddResponseMessages(sendSubject, msg);
                     break;
             }

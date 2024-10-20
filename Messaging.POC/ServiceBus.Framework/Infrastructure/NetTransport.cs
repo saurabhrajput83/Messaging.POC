@@ -9,7 +9,7 @@ namespace ServiceBus.Framework.Infrastructure
     public class NetTransport : Transport
     {
 
-        public NetTransport(ServiceBusType serviceBusType, string namespace_connection_string, string queue_name, string subscription_name) : base(serviceBusType, namespace_connection_string, queue_name, subscription_name)
+        public NetTransport(ServiceBusTypes serviceBusType, string namespace_connection_string, string queue_name, string subscription_name) : base(serviceBusType, namespace_connection_string, queue_name, subscription_name)
         {
 
 
