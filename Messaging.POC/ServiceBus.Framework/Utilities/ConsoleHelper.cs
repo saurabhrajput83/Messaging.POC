@@ -14,13 +14,14 @@ namespace ServiceBus.Framework.Utilities
             Console.WriteLine("\n");
             Console.WriteLine("*********************************************************");
             Console.WriteLine("ServiceBusSender SendMessagesAsync started..");
+            Console.WriteLine("*********************************************************");
             Console.WriteLine("Action Type::");
             Console.WriteLine(actionType);
             Console.WriteLine("Subject::");
             Console.WriteLine(subject);
             Console.WriteLine("Body::");
             Console.WriteLine(body);
-            Console.WriteLine("*********************************************************");
+
 
         }
 
@@ -38,13 +39,14 @@ namespace ServiceBus.Framework.Utilities
             Console.WriteLine("\n");
             Console.WriteLine("*********************************************************");
             Console.WriteLine($"Service Bus ProcessMessageHandler started for {appType}..");
+            Console.WriteLine("*********************************************************");
             Console.WriteLine("Action Type::");
             Console.WriteLine(actionType);
             Console.WriteLine("Subject::");
             Console.WriteLine(subject);
             Console.WriteLine("Body::");
             Console.WriteLine(body);
-            Console.WriteLine("*********************************************************");
+
 
         }
 

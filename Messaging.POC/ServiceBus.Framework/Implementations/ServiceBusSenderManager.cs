@@ -102,23 +102,32 @@ namespace ServiceBus.Framework.Implementations
             if (pmArgs.Message.ApplicationProperties["ActionType"] != null)
                 actionTypeStr = pmArgs.Message.ApplicationProperties["ActionType"].ToString();
 
-
-            ConsoleHelper.StartProcessMessageHandler(_appType, actionTypeStr, subject, body);
-
-            Message msg = JsonConvert.DeserializeObject<Message>(body);
-
-            // complete the message. message is deleted from the queue. 
             ServiceBusActionTypes actionType;
             Enum.TryParse<ServiceBusActionTypes>(actionTypeStr, out actionType);
+
 
             switch (actionType)
             {
                 case ServiceBusActionTypes.SendReply:
-                    this._sendRequestLogic.AddResponseMessages(sendSubject, msg);
+
+                    if (this._sendRequestLogic.Requests.Contains(sendSubject))
+                    {
+
+                        ConsoleHelper.StartProcessMessageHandler(_appType, actionTypeStr, subject, body);
+
+                        Message msg = JsonConvert.DeserializeObject<Message>(body);
+
+                        this._sendRequestLogic.AddResponseMessages(sendSubject, msg);
+
+                        ConsoleHelper.CompleteProcessMessageHandler(_appType);
+                    }
+
                     break;
             }
 
-            ConsoleHelper.CompleteProcessMessageHandler(_appType);
+
+
+            // complete the message. message is deleted from the queue. 
             await pmArgs.CompleteMessageAsync(pmArgs.Message);
 
         }

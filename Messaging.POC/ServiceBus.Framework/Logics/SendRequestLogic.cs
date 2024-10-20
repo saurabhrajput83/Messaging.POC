@@ -16,6 +16,8 @@ namespace ServiceBus.Framework.Logics
         private List<string> _requests;
         private Dictionary<string, Message> _responseMessages;
 
+        public List<string> Requests => _requests;
+
         public SendRequestLogic()
         {
 
@@ -33,11 +35,10 @@ namespace ServiceBus.Framework.Logics
 
         public void AddResponseMessages(string requestId, Message responseMsg)
         {
-            if (_requests.Contains(requestId))
-            {
+            if (!_responseMessages.ContainsKey(requestId))
                 _responseMessages.Add(requestId, responseMsg);
-
-            }
+            else
+                _responseMessages[requestId] = responseMsg;
         }
 
         public async Task<Message> GetResponse(string requestId, double timeout)
@@ -62,6 +63,7 @@ namespace ServiceBus.Framework.Logics
                 if (_responseMessages.ContainsKey(requestId))
                 {
                     responseMsg = _responseMessages[requestId];
+                    break;
                 }
             }
 
