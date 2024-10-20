@@ -65,23 +65,23 @@ namespace Messaging.POC.BLL
             Console.WriteLine($"*********************************************************");
         }
 
-        public static void StartListener(MessagingTypes messagingType, ListenerTypes listenerType)
+        public static void StartListener(MessagingTypes messagingType, ListenerTypes listenerType, string subject)
         {
             string messagingTypeStr = messagingType.ToString();
             string listenerTypeStr = listenerType.ToString();
             Console.WriteLine("\n");
             Console.WriteLine($"*********************************************************");
-            Console.WriteLine($"{messagingTypeStr} {listenerTypeStr} Started..");
+            Console.WriteLine($"{messagingTypeStr} Custom {listenerTypeStr} for {subject} Started..");
             Console.WriteLine($"*********************************************************");
 
         }
-        public static void CompleteListener(MessagingTypes messagingType, ListenerTypes listenerType)
+        public static void CompleteListener(MessagingTypes messagingType, ListenerTypes listenerType, string subject)
         {
             string messagingTypeStr = messagingType.ToString();
             string listenerTypeStr = listenerType.ToString();
             Console.WriteLine("\n");
             Console.WriteLine($"*********************************************************");
-            Console.WriteLine($"{messagingTypeStr} {listenerTypeStr} Completed..");
+            Console.WriteLine($"{messagingTypeStr} Custom {listenerTypeStr} for {subject} Completed..");
             Console.WriteLine($"*********************************************************");
         }
 

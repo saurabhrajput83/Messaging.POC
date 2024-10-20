@@ -17,9 +17,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
     {
         private Frwk.Transport _transport;
         private Frwk.Queue _queue;
-        private double _timeout = 30000;
+        private double _timeout = 5000;
         private Dictionary<string, Frwk.Listener> _listeners;
-        private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public Channel(Frwk.Transport transport)
         {
@@ -30,14 +29,14 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         public void SendMessage(CustomMessage customMsg)
         {
-            Frwk.Message msg = ConvertToTibcoMessage(customMsg);
+            Frwk.Message msg = ConvertToFrwkMessage(customMsg);
 
             _transport.Send(msg);
         }
 
         public CustomMessage SendRequestMessage(CustomMessage customMsg)
         {
-            Frwk.Message msg = ConvertToTibcoMessage(customMsg);
+            Frwk.Message msg = ConvertToFrwkMessage(customMsg);
 
             Frwk.Message replyMsg = _transport.SendRequest(msg, _timeout);
 
@@ -46,8 +45,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         public void SendReplyMessage(CustomMessage customReplyMsg, CustomMessage customMsg)
         {
-            Frwk.Message replyMsg = ConvertToTibcoMessage(customReplyMsg);
-            Frwk.Message msg = ConvertToTibcoMessage(customMsg);
+            Frwk.Message replyMsg = ConvertToFrwkMessage(customReplyMsg);
+            Frwk.Message msg = ConvertToFrwkMessage(customMsg);
 
 
             _transport.SendReply(replyMsg, msg);
@@ -74,11 +73,13 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         public void Dispatch()
         {
-            ServiceBusReceiverManager _serviceBusReceiverManager = new ServiceBusReceiverManager(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
-            Task.Run(async () => await _serviceBusReceiverManager.StartListening(_listeners)).GetAwaiter().GetResult();
+            foreach (KeyValuePair<string, Frwk.Listener> listener in _listeners)
+            {
+                ConsoleHelper.DisplayListenerStarted(listener.Key);
+            }
 
-
-
+            var dispacher = new Frwk.Dispatcher(_queue);
+            dispacher.Join();
         }
 
         protected void OnMessageReceivedEventHandler(object listener, Frwk.MessageReceivedEventArgs args)
@@ -87,13 +88,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
             Frwk.Message msg = args.Message;
             CustomMessage customMsg = ConvertToCustomMessage(msg);
 
-            string msgStr = JsonConvert.SerializeObject(msg);
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
-
-
-            Console.WriteLine($"\nOnMessageReceivedEventHandler Received..");
-            Console.WriteLine($"Message: {msgStr}");
-            Console.WriteLine($"CustomMessage: {customMsgStr}");
+            Helper.FrwkOnMessageReceivedEventHandlerStarted(msg, customMsg);
 
             CustomMessageReceivedEventHandler handler = (CustomMessageReceivedEventHandler)args.Closure;
 
@@ -103,9 +98,10 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 handler(this, cmrArgs);
             }
 
+            Helper.FrwkOnMessageReceivedEventHandlerCompleted();
         }
 
-        private Frwk.Message ConvertToTibcoMessage(CustomMessage customMsg)
+        private Frwk.Message ConvertToFrwkMessage(CustomMessage customMsg)
         {
             Frwk.Message msg = new Frwk.Message();
 
@@ -119,6 +115,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 msg.AddField(new Frwk.MessageField("Department", customMsg.Department));
                 msg.AddField(new Frwk.MessageField("Address", customMsg.Address));
             }
+
             return msg;
         }
 
@@ -131,10 +128,10 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
                 customMsg.SendSubject = msg.SendSubject;
                 customMsg.ReplySubject = msg.ReplySubject;
 
-                customMsg.Name = Convert.ToString(msg.GetField("Name").Value);
-                customMsg.Age = Convert.ToInt32(msg.GetField("Age").Value);
-                customMsg.Department = Convert.ToString(msg.GetField("Department").Value);
-                customMsg.Address = Convert.ToString(msg.GetField("Address").Value);
+                customMsg.Name = (string)msg.GetField("Name").Value;
+                customMsg.Age = (int)msg.GetField("Age").Value;
+                customMsg.Department = (string)msg.GetField("Department").Value;
+                customMsg.Address = (string)msg.GetField("Address").Value;
             }
 
             return customMsg;

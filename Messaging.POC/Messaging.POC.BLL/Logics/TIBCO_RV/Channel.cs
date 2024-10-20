@@ -96,6 +96,7 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
                 handler(this, cmrArgs);
             }
 
+            Helper.FrwkOnMessageReceivedEventHandlerCompleted();
         }
 
         private Frwk.Message ConvertToFrwkMessage(CustomMessage customMsg)

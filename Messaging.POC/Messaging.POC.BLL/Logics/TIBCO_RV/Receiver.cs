@@ -55,8 +55,9 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         private void SendListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
             ListenerTypes listenerType = ListenerTypes.SendListener;
+            string subject = Configs.SENDMESSAGESUBJECT;
 
-            ConsoleHelper.StartListener(_messagingType, listenerType);
+            ConsoleHelper.StartListener(_messagingType, listenerType, subject);
 
             CustomMessage requestMsg = args.Message;
 
@@ -64,10 +65,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
             if (!string.IsNullOrEmpty(requestMsg.ReplySubject))
             {
-                SendReply(requestMsg, 1);
+                SendReply(requestMsg, 4);
             }
 
-            ConsoleHelper.CompleteListener(_messagingType, listenerType);
+            ConsoleHelper.CompleteListener(_messagingType, listenerType, subject);
 
         }
 
@@ -75,8 +76,9 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
         {
 
             ListenerTypes listenerType = ListenerTypes.SendRequestListener;
+            string subject = Configs.SENDREQUESTMESSAGESUBJECT;
 
-            ConsoleHelper.StartListener(_messagingType, listenerType);
+            ConsoleHelper.StartListener(_messagingType, listenerType, subject);
 
             CustomMessage requestMsg = args.Message;
 
@@ -84,18 +86,19 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
             if (!string.IsNullOrEmpty(requestMsg.ReplySubject))
             {
-                SendReply(requestMsg, 2);
+                SendReply(requestMsg, 5);
 
             }
 
-            ConsoleHelper.CompleteListener(_messagingType, listenerType);
+            ConsoleHelper.CompleteListener(_messagingType, listenerType, subject);
         }
 
         private void SendReplyListener_MessageReceived(object listener, CustomMessageReceivedEventArgs args)
         {
             ListenerTypes listenerType = ListenerTypes.SendReplyListener;
+            string subject = Configs.SENDREPLYMESSAGESUBJECT;
 
-            ConsoleHelper.StartListener(_messagingType, listenerType);
+            ConsoleHelper.StartListener(_messagingType, listenerType, subject);
 
             CustomMessage requestMsg = args.Message;
 
@@ -103,9 +106,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
             if (!string.IsNullOrEmpty(requestMsg.ReplySubject))
             {
-                SendReply(requestMsg, 3);
+                SendReply(requestMsg, 6);
             }
 
+            ConsoleHelper.CompleteListener(_messagingType, listenerType, subject);
         }
 
         private void SendReply(CustomMessage requestMsg, int counter)

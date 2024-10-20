@@ -18,8 +18,10 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
         public static void FrwkOnMessageReceivedEventHandlerStarted(Frwk.Message msg, CustomMessage customMsg)
         {
-
-            Console.WriteLine($"\nFrwk OnMessageReceivedEventHandler Started..::");
+            Console.WriteLine("\n");
+            Console.WriteLine($"*********************************************************");
+            Console.WriteLine($"Frwk OnMessageReceivedEventHandler Started..::");
+            Console.WriteLine($"*********************************************************");
 
             string msgStr = JsonConvert.SerializeObject(msg);
             string customMsgStr = JsonConvert.SerializeObject(customMsg);
@@ -29,6 +31,16 @@ namespace Messaging.POC.BLL.Logics.TIBCO_RV
 
             Console.WriteLine($"\nCustom Message..::");
             Console.WriteLine($"{customMsgStr}");
+
+        }
+
+        public static void FrwkOnMessageReceivedEventHandlerCompleted()
+        {
+
+            Console.WriteLine("\n");
+            Console.WriteLine($"*********************************************************");
+            Console.WriteLine($"Frwk OnMessageReceivedEventHandler Completed..::");
+            Console.WriteLine($"*********************************************************");
 
         }
 

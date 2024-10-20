@@ -20,7 +20,8 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
     {
         private Frwk.Transport _transport;
         private Channel _channel;
-        private string _messagingType = Helper.GetMessagingType().ToString();
+        private MessagingTypes _messagingType = Helper.GetMessagingType();
+        private AppTypes _appType = AppTypes.Publisher;
         private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public void Run()
@@ -32,21 +33,17 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
                 _transport = new Frwk.NetTransport(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
-
-                _transport.StartListening();
-
-                Console.WriteLine($"\n{_messagingType} Publisher started running..");
+                ConsoleHelper.StartApp(_messagingType, _appType);
                 bool flag = true;
 
                 while (flag)
                 {
-                    Console.WriteLine("Press 1 to test Send, 2 to test SendRequest, 3 to test SendReply, and x to exit");
-                    var line = Console.ReadLine().ToUpper();
+                    ConsoleHelper.DisplayActions();
 
+                    var line = Console.ReadLine().ToUpper();
 
                     switch (line)
                     {
-
                         case "1":
                             SendMessage();
                             break;
@@ -65,8 +62,6 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
                 }
 
-               
-
                 Frwk.Environment.Close();
 
             }
@@ -78,41 +73,58 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         private void SendMessage()
         {
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDMESSAGESUBJECT, 1);
+            ActionTypes actionType = ActionTypes.Send;
+            string sendSubject = Configs.SENDMESSAGESUBJECT;
 
+            ConsoleHelper.StartAction(_messagingType, actionType);
 
-            _channel.SendMessage(customMsg);
-            Console.WriteLine($"\n{_messagingType} SendMessage Completed..");
+            CustomMessage requestMsg = CustomMessageHelper.GetCustomMessage(sendSubject, 1);
+
+            ConsoleHelper.DisplayCustomRequestMessage(requestMsg);
+
+            _channel.SendMessage(requestMsg);
+
+            ConsoleHelper.CompleteAction(_messagingType, actionType);
         }
 
         private void SendRequestMessage()
         {
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDREQUESTMESSAGESUBJECT, 2);
+            ActionTypes actionType = ActionTypes.SendRequest;
+            string sendSubject = Configs.SENDREQUESTMESSAGESUBJECT;
 
-            CustomMessage responseMsg = _channel.SendRequestMessage(customMsg);
+            ConsoleHelper.StartAction(_messagingType, actionType);
 
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
-            string responseMsgStr = JsonConvert.SerializeObject(responseMsg);
+            CustomMessage requestMsg = CustomMessageHelper.GetCustomMessage(sendSubject, 2);
 
+            ConsoleHelper.DisplayCustomRequestMessage(requestMsg);
 
-            Console.WriteLine($"\n{_messagingType} SendRequestMessage Completed..");
-            Console.WriteLine($"customMsg: {customMsgStr}");
-            Console.WriteLine($"responseMsg: {responseMsgStr}");
+            DateTime dtStartTime = DateTime.Now;
+
+            CustomMessage responseMsg = _channel.SendRequestMessage(requestMsg);
+
+            ConsoleHelper.DisplayCustomResponseMessage(responseMsg);
+
+            ConsoleHelper.DisplayTimeDifference(dtStartTime);
+
+            ConsoleHelper.CompleteAction(_messagingType, actionType);
         }
 
         private void SendReplyMessage()
         {
+            ActionTypes actionType = ActionTypes.SendReply;
+            string sendSubject = Configs.SENDMESSAGESUBJECT;
+            string replySubject = Configs.SENDREPLYMESSAGESUBJECT;
 
-            CustomMessage customMsg = CustomMessageHelper.GetCustomMessage(Configs.SENDMESSAGESUBJECT, 3);
-            customMsg.ReplySubject = Configs.SENDREPLYMESSAGESUBJECT;
+            ConsoleHelper.StartAction(_messagingType, actionType);
 
-            _channel.SendMessage(customMsg);
+            CustomMessage requestMsg = CustomMessageHelper.GetCustomMessage(sendSubject, 3);
+            requestMsg.ReplySubject = replySubject;
 
-            string customMsgStr = JsonConvert.SerializeObject(customMsg);
+            ConsoleHelper.DisplayCustomRequestMessage(requestMsg);
 
+            _channel.SendMessage(requestMsg);
 
-            Console.WriteLine($"\n{_messagingType} SendReplyMessage Completed..");
-            Console.WriteLine($"customMsg: {customMsgStr}");
+            ConsoleHelper.CompleteAction(_messagingType, actionType);
         }
 
     }
