@@ -17,14 +17,13 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private double _timeout = 30000;
         private Dictionary<string, Frwk.Listener> _listeners;
         private ServiceBusReceiverManager _serviceBusReceiverManager;
-        private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public Channel(Frwk.Transport transport)
         {
             _transport = transport;
             _queue = Frwk.Queue.Default;
             _listeners = new Dictionary<string, Frwk.Listener>();
-            _serviceBusReceiverManager = new ServiceBusReceiverManager(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
+            _serviceBusReceiverManager = new ServiceBusReceiverManager(Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
         }
 
         public void SendMessage(CustomMessage customMsg)

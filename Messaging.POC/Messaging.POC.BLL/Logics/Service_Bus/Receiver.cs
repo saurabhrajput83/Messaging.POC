@@ -13,7 +13,6 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
         private Channel _channel;
         private MessagingTypes _messagingType = Helper.GetMessagingType();
         private AppTypes _appType = AppTypes.Receiver;
-        private ServiceBusTypes _serviceBusType = Helper.GetDefaultServiceBusType();
 
         public void Preprocessing()
         {
@@ -25,7 +24,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
             {
                 Frwk.Environment.Open();
 
-                _transport = new Frwk.NetTransport(_serviceBusType, Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
+                _transport = new Frwk.NetTransport(Configs.NAMESPACE_CONNECTION_STRING, Configs.TOPIC_OR_QUEUE_NAME, Configs.SUBSCRIPTION_NAME);
                 _channel = new Channel(_transport);
 
                 Preprocessing();

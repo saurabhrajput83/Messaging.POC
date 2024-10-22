@@ -13,11 +13,6 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
             return MessagingTypes.Service_Bus;
         }
 
-        public static ServiceBusTypes GetDefaultServiceBusType()
-        {
-            return ServiceBusTypes.Topic;
-        }
-
         public static void FrwkOnMessageReceivedEventHandlerStarted(Frwk.Message msg, CustomMessage customMsg)
         {
             Console.WriteLine("\n");
