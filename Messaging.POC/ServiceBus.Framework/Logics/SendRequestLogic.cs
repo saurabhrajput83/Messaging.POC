@@ -1,12 +1,8 @@
-﻿using Azure.Core;
-using ServiceBus.Framework.Infrastructure;
+﻿using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceBus.Framework.Logics

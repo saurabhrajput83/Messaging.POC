@@ -1,8 +1,6 @@
-﻿using Azure.Core;
-using Azure.Messaging.ServiceBus;
+﻿using Azure.Messaging.ServiceBus;
 using ServiceBus.Framework.Interfaces;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace ServiceBus.Framework.Implementations

@@ -3,11 +3,8 @@ using Newtonsoft.Json;
 using ServiceBus.Framework.Infrastructure;
 using ServiceBus.Framework.Interfaces;
 using ServiceBus.Framework.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace ServiceBus.Framework.Implementations
@@ -19,18 +16,19 @@ namespace ServiceBus.Framework.Implementations
         private Dictionary<string, Listener> _listeners;
         private string _appType = ServiceBusAppTypes.Receiver.ToString();
 
-        public ServiceBusReceiverManager(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        public ServiceBusReceiverManager(string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            if (serviceBusType == ServiceBusTypes.Topic)
+            string serviceBusType = ConfigurationManager.AppSettings["serviceBusType"];
+
+            if (serviceBusType == "Topic")
             {
                 _sender = new ServiceBusTopicSender(namespace_connection_string, topic_or_queue_name, subscription_name);
                 _receiver = new ServiceBusTopicReceiver(namespace_connection_string, topic_or_queue_name, subscription_name);
             }
-            else if (serviceBusType == ServiceBusTypes.Queue)
+            else
             {
                 _sender = new ServiceBusQueueSender(namespace_connection_string, topic_or_queue_name);
                 _receiver = new ServiceBusQueueReceiver(namespace_connection_string, topic_or_queue_name);
-
             }
 
             _listeners = new Dictionary<string, Listener>();

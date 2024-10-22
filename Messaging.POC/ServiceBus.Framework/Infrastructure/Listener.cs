@@ -1,13 +1,4 @@
-﻿using Microsoft.Azure.Amqp.Framing;
-using ServiceBus.Framework.Implementations;
-using ServiceBus.Framework.Interfaces;
-using System;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ServiceBus.Framework.Infrastructure
+﻿namespace ServiceBus.Framework.Infrastructure
 {
     public class Listener
     {

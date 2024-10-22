@@ -1,13 +1,5 @@
-﻿using Newtonsoft.Json;
-using ServiceBus.Framework.Implementations;
-using ServiceBus.Framework.Interfaces;
+﻿using ServiceBus.Framework.Implementations;
 using ServiceBus.Framework.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ServiceBus.Framework.Infrastructure
@@ -17,9 +9,9 @@ namespace ServiceBus.Framework.Infrastructure
 
         private ServiceBusSenderManager _serviceBusSenderManager = null;
 
-        protected Transport(ServiceBusTypes serviceBusType, string namespace_connection_string, string topic_or_queue_name, string subscription_name)
+        protected Transport(string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
-            _serviceBusSenderManager = new ServiceBusSenderManager(serviceBusType, namespace_connection_string, topic_or_queue_name, subscription_name);
+            _serviceBusSenderManager = new ServiceBusSenderManager(namespace_connection_string, topic_or_queue_name, subscription_name);
 
         }
 

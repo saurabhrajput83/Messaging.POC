@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace ServiceBus.Framework
 {
@@ -12,14 +7,6 @@ namespace ServiceBus.Framework
         Send = 0,
         SendRequest = 1,
         SendReply
-    }
-
-    public enum ServiceBusTypes
-    {
-        [Description("Topic")]
-        Topic = 0,
-        [Description("Queue")]
-        Queue = 1
     }
 
     public enum ServiceBusAppTypes
