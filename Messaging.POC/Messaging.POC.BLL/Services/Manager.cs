@@ -1,12 +1,5 @@
-﻿using Messaging.POC.BLL;
-using Messaging.POC.BLL.Logics.Interfaces;
+﻿using Messaging.POC.BLL.Logics.Interfaces;
 using Messaging.POC.BLL.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Logics = Messaging.POC.BLL.Logics;
 
 namespace Messaging.POC.BLL.Services
 {

@@ -1,12 +1,9 @@
 ﻿using Messaging.POC.BLL.DTOs;
 using Messaging.POC.BLL.Logics.Interfaces;
-using Newtonsoft.Json;
 using ServiceBus.Framework;
 using ServiceBus.Framework.Implementations;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Frwk = ServiceBus.Framework.Infrastructure;
 
@@ -96,7 +93,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
             if (handler != null)
             {
-                CustomMessageReceivedEventArgs cmrArgs = new CustomMessageReceivedEventArgs(customMsg);
+                CustomMessageReceivedEventArgs cmrArgs = new CustomMessageReceivedEventArgs(customMsg, args.Closure);
                 handler(this, cmrArgs);
             }
 

@@ -1,26 +1,22 @@
 ﻿using Messaging.POC.BLL.DTOs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Messaging.POC.BLL.Logics
 {
     public class CustomMessageReceivedEventArgs : EventArgs
     {
-        internal CustomMessage message;
+        internal CustomMessage _message;
 
-        //internal object closure;
+        internal object _closure;
 
-        public CustomMessage Message => message;
+        public CustomMessage Message => _message;
 
-        //public object Closure => closure;
+        public object Closure => _closure;
 
-        internal CustomMessageReceivedEventArgs(CustomMessage message)
+        internal CustomMessageReceivedEventArgs(CustomMessage message, object closure)
         {
-            this.message = message;
-            //this.closure = closure;
+            _message = message;
+            _closure = closure;
         }
     }
 }

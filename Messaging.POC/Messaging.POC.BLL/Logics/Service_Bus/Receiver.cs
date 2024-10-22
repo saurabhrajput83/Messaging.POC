@@ -1,18 +1,8 @@
-﻿using Messaging.POC.BLL;
-using Messaging.POC.BLL.DTOs;
+﻿using Messaging.POC.BLL.DTOs;
 using Messaging.POC.BLL.Logics.Interfaces;
-using Newtonsoft.Json;
 using ServiceBus.Framework;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Channels;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Frwk = ServiceBus.Framework.Infrastructure;
 
 namespace Messaging.POC.BLL.Logics.Service_Bus
