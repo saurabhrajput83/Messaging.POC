@@ -1,1 +1,5 @@
 Details
+
+<add key="namespace_connection_string" value="Endpoint=sb://srajput-azure-sb-nm-std.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=I/mLo/X1Aj4KMD27EGLzMNd/SMIaVLTpn+ASbJ+cob0=" />
+    <add key="topic_or_queue_name" value="srajput-azure-sb-topic-main" />
+    <add key="subscription_name" value="srajput-azure-sb-topic-main-s1" />
