@@ -71,7 +71,7 @@ namespace ServiceBus.Framework.Implementations
                 Listener listener = listeners[sendSubject];
                 MessageReceivedEventArgs mrArgs = new MessageReceivedEventArgs(msg, listener.Closure);
 
-                listener.MessageReceivedEventHandler(listener, mrArgs);
+                listener.OnMessageReceivedEventHandler(listener, mrArgs);
             }
 
             ConsoleHelper.CompleteProcessMessageHandler(_appType);

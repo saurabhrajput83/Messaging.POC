@@ -39,7 +39,6 @@ namespace ServiceBus.Framework.Logics
 
         public async Task<Message> GetResponse(string requestId, double timeout)
         {
-
             return await Task.Run(() =>
             {
                 return GetResponseMessage(requestId, timeout);
@@ -54,7 +53,7 @@ namespace ServiceBus.Framework.Logics
             Stopwatch s = new Stopwatch();
             s.Start();
 
-            while (s.Elapsed <= TimeSpan.FromMilliseconds(timeout))
+            while (s.Elapsed <= TimeSpan.FromSeconds(timeout))
             {
                 if (_responseMessages.ContainsKey(requestId))
                 {

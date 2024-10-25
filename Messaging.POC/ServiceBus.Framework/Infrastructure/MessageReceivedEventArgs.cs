@@ -8,14 +8,14 @@ namespace ServiceBus.Framework.Infrastructure
 
         internal object _closure;
 
-        public Message Message => _message;
-
-        public object Closure => _closure;
-
         internal MessageReceivedEventArgs(Message message, object closure)
         {
             this._message = message;
             this._closure = closure;
         }
+
+        public Message Message => _message;
+
+        public object Closure => _closure;
     }
 }

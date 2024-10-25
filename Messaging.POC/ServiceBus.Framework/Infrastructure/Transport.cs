@@ -6,18 +6,14 @@ namespace ServiceBus.Framework.Infrastructure
 {
     public abstract class Transport
     {
-
         private ServiceBusSenderManager _serviceBusSenderManager = null;
 
         protected Transport(string namespace_connection_string, string topic_or_queue_name, string subscription_name)
         {
             _serviceBusSenderManager = new ServiceBusSenderManager(namespace_connection_string, topic_or_queue_name, subscription_name);
 
-        }
-
-        public virtual void StartListening()
-        {
             Task.Run(async () => await _serviceBusSenderManager.StartListening()).GetAwaiter().GetResult();
+
         }
 
         public virtual void Send(Message message)
@@ -35,10 +31,16 @@ namespace ServiceBus.Framework.Infrastructure
             Task.Run(async () => await _serviceBusSenderManager.SendReplyMessage(reply, request)).GetAwaiter().GetResult();
         }
 
-        public string CreateInbox(Message reply, Message request)
+        public string CreateInbox()
         {
             string inboxName = Helper.GetInboxName();
             return inboxName;
+        }
+
+        public virtual void Destroy()
+        {
+            if (_serviceBusSenderManager != null)
+                Task.Run(async () => await _serviceBusSenderManager.StopListening()).GetAwaiter().GetResult();
         }
 
     }
