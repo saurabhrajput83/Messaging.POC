@@ -1,0 +1,4 @@
+variables:
+    # Build and Deploy variables
+    BUILD_AND_DEPLOY_REVIEWS_API: 'true'
+    BUILD_AND_DEPLOY_REVIEWS_ADMIN_API: 'true'

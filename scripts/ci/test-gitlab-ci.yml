@@ -1,0 +1,11 @@
+
+variables:
+  CURRENT_STAGE: 'test'
+
+stages:
+  - test
+  
+test_job:
+  stage: test
+  script:
+    - echo "This is $CURRENT_STAGE job"

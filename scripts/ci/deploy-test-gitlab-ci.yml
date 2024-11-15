@@ -1,0 +1,37 @@
+include:
+  - local: ci/variables-build-deploy-gitlab-ci.yml
+
+stages:
+  - deploy
+
+deploy_init_job:
+  stage: deploy
+  script:
+    - echo "BUILD_AND_DEPLOY_REVIEWS_API = $BUILD_AND_DEPLOY_REVIEWS_API"
+    - echo "BUILD_AND_DEPLOY_REVIEWS_ADMIN_API = $BUILD_AND_DEPLOY_REVIEWS_ADMIN_API"
+
+deploy_reviews_api_job:
+  stage: deploy
+  needs: ["deploy_init_job", "build_reviews_api_job", "test_job"]
+  # before_script:
+  script:
+    - scripts/deploy_Reviews.API.bat
+  # after_script:
+  rules:
+      - if: $BUILD_AND_DEPLOY_REVIEWS_API == 'true'
+        when: always
+      - if: $BUILD_AND_DEPLOY_REVIEWS_API == 'false'
+        when: never
+
+deploy_reviews_admin_api_job:
+  stage: deploy
+  needs: ["deploy_init_job", "build_reviews_admin_api_job", "test_job"]
+  # before_script:
+  script:
+      - scripts/deploy_Reviews.Admin.API.bat
+  # after_script:
+  rules:
+      - if: $BUILD_AND_DEPLOY_REVIEWS_ADMIN_API == 'true'
+        when: always
+      - if: $BUILD_AND_DEPLOY_REVIEWS_ADMIN_API == 'false'
+        when: never
