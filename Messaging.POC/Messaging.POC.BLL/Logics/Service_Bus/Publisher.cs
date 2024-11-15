@@ -15,7 +15,7 @@ namespace Messaging.POC.BLL.Logics.Service_Bus
 
         public void Preprocessing()
         {
-            _transport.StartListening();
+            
         }
 
         public void Run()
